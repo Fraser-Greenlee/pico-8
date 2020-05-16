@@ -14,79 +14,79 @@ __lua__
 actor={}
 function actor:new(o)
 	--use this for making subclasses
- o=o or {}
- o.x = o.x or 0
- o.y = o.y or 0
- o.z = o.z or 0
- o.drawx,o.drawy,o.drawz = o.x,o.y,o.z
- o.dx = o.dx or 0
- o.dy = o.dy or 0
- o.dz = o.dz or 0
- o.ddx,o.ddy,o.ddz = 0,0,0 -- for incidental momentum
- o.g = o.g or false
- o.stun = o.stun or false
- o.stunt = o.stunt or 0
- o.tt = o.tt or 0 --generic timer
- o.grav = o.grav or 0.2
- o.jump = o.jump or 2
- o.speed = o.speed or 1
- o.mag = 0
- o.ang = o.ang or 0.75
- o.dead,o.attack=false,false
- o.r = o.r or 1 --range
- o.attackang=o.ang
- o.sprite = o.sprite or 1
- o.spritedraw = o.spritedraw or o.sprite
- o.spritex = 8*(o.sprite%16)
- o.spritey = 8*flr(o.sprite/16)
- o.spritesize = o.spritesize or 8
- o.dsize = o.dsize or o.spritesize
- o.shadow = o.shadow or true
- o.inv = false
- o.invt = 0
- --o.say = o.say or false
- o.hb = o.hb or 4
- o.super = o.super or false
- o.supert = o.supert or 0
- o.st = 0 -- used for timing animations
- o.children={} -- child sprites
+	o=o or {}
+	o.x = o.x or 0
+	o.y = o.y or 0
+	o.z = o.z or 0
+	o.drawx,o.drawy,o.drawz = o.x,o.y,o.z
+	o.dx = o.dx or 0
+	o.dy = o.dy or 0
+	o.dz = o.dz or 0
+	o.ddx,o.ddy,o.ddz = 0,0,0 -- for incidental momentum
+	o.g = o.g or false
+	o.stun = o.stun or false
+	o.stunt = o.stunt or 0
+	o.tt = o.tt or 0 --generic timer
+	o.grav = o.grav or 0.2
+	o.jump = o.jump or 3
+	o.speed = o.speed or 1
+	o.mag = 0
+	o.ang = o.ang or 0.75
+	o.dead,o.attack=false,false
+	o.r = o.r or 1 --range
+	o.attackang=o.ang
+	o.sprite = o.sprite or 1
+	o.spritedraw = o.spritedraw or o.sprite
+	o.spritex = 8*(o.sprite%16)
+	o.spritey = 8*flr(o.sprite/16)
+	o.spritesize = o.spritesize or 8
+	o.dsize = o.dsize or o.spritesize
+	o.shadow = o.shadow or true
+	o.inv = false
+	o.invt = 0
+	--o.say = o.say or false
+	o.hb = o.hb or 4
+	o.super = o.super or false
+	o.supert = o.supert or 0
+	o.st = 0 -- used for timing animations
+	o.children={} -- child sprites
 	o.tongues={} --holder for tongues
- o.mom = o.mom or nil
- o.walkframe,o.flipframe,o.flipme,o.canjump = 0,false,false,false
- o.speedframe = 4
+	o.mom = o.mom or nil
+	o.walkframe,o.flipframe,o.flipme,o.canjump = 0,false,false,false
+	o.speedframe = 4
 	o.camx,o.camy,o.camz,o.cx,o.cy,o.floor,o.camfloor = 1,1,1,1,1,1,1
 	o.bf = false
 	o.xmax,o.pix8,o.xpix,o.ypix,o.ypixf = 1,1,1,1,1
 	o.white = false
- -- stats
- o.health = o.health or 100
- o.hasfeet = o.hasfeet or false
- -- wall values
- o.w = {}
- o.wo = {}
- for i=0,4,1 do
- 	o.w[i] = false
- 	o.wo[i] = false
- end
- setmetatable(o,self)
- self.__index=self
- return o
+	-- stats
+	o.health = o.health or 100
+	o.hasfeet = o.hasfeet or false
+	-- wall values
+	o.w = {}
+	o.wo = {}
+	for i=0,4,1 do
+	o.w[i] = false
+	o.wo[i] = false
+	end
+	setmetatable(o,self)
+	self.__index=self
+	return o
 end
 
 function actor:inst(o)
 	--use this to actually create an instance ingame
- o=o or {}
- local a={}
- for k,v in pairs(self) do
- 	a[k] = v
- end
- -- special loop
- for k,v in pairs(o) do
- 	a[k] = v
- end
- setmetatable(a,self)
- self.__index=self
- return a
+	o=o or {}
+	local a={}
+	for k,v in pairs(self) do
+		a[k] = v
+	end
+	-- special loop
+	for k,v in pairs(o) do
+		a[k] = v
+	end
+	setmetatable(a,self)
+	self.__index=self
+	return a
 end
 
 
@@ -109,13 +109,13 @@ end
 
 
 function tand(ang)
- if (ang == 90 or ang == 270) return 0
- angn = -ang/360
- return (sin(angn)/cos(angn))
+	if (ang == 90 or ang == 270) return 0
+	angn = -ang/360
+	return (sin(angn)/cos(angn))
 end
 
 function simplexy(xx,yy)
- return flr(xx/8), flr(yy/8)
+	return flr(xx/8), flr(yy/8)
 end
 
 function mapget(x,y)
@@ -126,8 +126,8 @@ end
 
 function getpixid(id)
 	--px = 8*(id%16)
- --py = 8*flr(id/16)
- return 8*(id%16),8*flr(id/16)
+	--py = 8*flr(id/16)
+	return 8*(id%16),8*flr(id/16)
 end
 
 --drawing constants
@@ -157,16 +157,14 @@ end
 
 -- collision handler
 function bump(act,hero)
---perform exact collisions
- myx,myy,myz,myid = hero.x,hero.y,hero.z,hero.sprite
+	-- perform exact collisions
+	myx,myy,myz,myid = hero.x,hero.y,hero.z,hero.sprite
 	hb2=0
 	if (myid == 53) hb2=2
 	for k,v in pairs(act) do
-	 hisx,hisy,hisz,hisid = v.x,v.y,v.z,v.sprite
+		hisx,hisy,hisz,hisid = v.x,v.y,v.z,v.sprite
 		if hisid != myid then
-			if abs(myx-hisx) <= v.hb+hb2 
-			and abs(myy-hisy) <= v.hb+hb2
-			and abs(myz-hisz) <= v.hb then
+			if abs(myx-hisx) <= v.hb+hb2 and abs(myy-hisy) <= v.hb+hb2 and abs(myz-hisz) <= v.hb then
 				--check id of other
 				--implement activity
 				--consider hb as actor trait	
@@ -183,12 +181,12 @@ function bump(act,hero)
 						v.z = 3000
 						v:make_spit(52,5)
 						health+=5
-						hero.white = 10				 
-				  player.super = true
-				  player.supert = 210
-				  sfx(7)
-				 elseif hisid == 64 then
-					 hero:stunme(0.25)
+						hero.white = 10
+						player.super = true
+						player.supert = 210
+						sfx(7)
+					elseif hisid == 64 then
+						hero:stunme(0.25)
 					elseif hisid == 105 then
 						hero:stunme(hero.ang)
 						v:make_spit(52,5)
@@ -206,8 +204,8 @@ function bump(act,hero)
 							sfx(3)
 						end 				
 					elseif hisid == 106 or
-					hisid == 120 or
-					hisid == 72 then
+						hisid == 120 or
+						hisid == 72 then
 					elseif hisid > 64 then
 						hero:stunme(hero.ang)
 						v:stunme(0.5+hero.ang)
@@ -215,7 +213,7 @@ function bump(act,hero)
 					end 
 				-- tongue
 				elseif myid == 53 then
-				 if hisid == 37 then
+					if hisid == 37 then
 						v.dead=true
 						v:make_spit(52,5)
 						health+=5
@@ -226,140 +224,137 @@ function bump(act,hero)
 						v:make_spit(52,5)
 						health+=5
 						hero.white = 10				 
-				  player.super = true
-				  player.supert = 240
-				  sfx(7)
-				 elseif hisid == 64 then
-					 if player.super then
-					  v.dead=true
+				  		player.super = true
+				  		player.supert = 240
+				  		sfx(7)
+				 	elseif hisid == 64 then
+						if player.super then
+							v.dead=true
 							v:make_spit(52,5)
 							health+=5
 							player.white = 10
 							sfx(6)
-					 else 
-					 	player:stunme(0.25)
-					 end
---					elseif hisid >=89 and hisid<=106 then
-					elseif hisid == 106 or
-					hisid == 89 or
-					hisid == 105 or
-					hisid == 104 then
-					elseif hisid == 120 then
-					 if v.tt<=0 then
-					 	v:make_pickup(1)
-					 	sfx(12)
-					 	v.health+=-1
-					 	v.dz=2
-					 	v.tt = 6
-					 	if v.health <=0 then
-					 		v.dead=true
-					 		v:make_pickup(4)
-					 		giftfind+=1
+					 	else
+					 		player:stunme(0.25)
 					 	end
-					 end
+					-- elseif hisid >=89 and hisid<=106 then
+					elseif hisid == 106 or hisid == 89 or hisid == 105 or hisid == 104 then
+					elseif hisid == 120 then
+						if v.tt<=0 then
+							v:make_pickup(1)
+							sfx(12)
+							v.health+=-1
+							v.dz=2
+							v.tt = 6
+							if v.health <=0 then
+								v.dead=true
+								v:make_pickup(4)
+								giftfind+=1
+							end
+						end
 					elseif hisid > 64 then
 						v.dead=true
 						v:make_spit(52,5)
 						health+=5
 						player.white = 10
 						sfx(6)
-					end 
+					end
 				end
 			end
 		end
 	end
 end
-			
+
 -->8
 -- init
 
 function actor_crawl()
- -- grab all the actors
- -- replace their tile with
- -- the above position on map
- giftcount,giftfind,akey = 0,0,{}
- actor_list,block_list,dummy_list = {},{},{}
- akey[33],akey[49],akey[34],akey[37] = bridge,door,hero,pickup
--- akey[49] = door
--- akey[34] = hero
--- akey[37] = pickup
- akey[74],akey[98],akey[100],akey[50],akey[89],akey[73] = dummy,dumfire,spinfire,blocker,portal,pepper
---- akey[98] = dumfire
--- akey[100] = spinfire
--- akey[50],akey[89],akey[73] = blocker,portal,pepper
--- akey[89] = portal
--- akey[73] = pepper
- akey[106],akey[104],akey[120] = friend,spring,gift
--- akey[104] = spring
--- akey[120] = gift
- if (hard) akey[37],akey[89] = dummy,dummy
- --for yy=0,64,1 do
- for yy=1+levely0/8,levely1/8,1 do
- 	--for xx=0,16,1 do
- 	for xx=levelx0/8,levelx1/8,1 do
- 		tile = mget(xx,yy)
- 		--herohandler
- 		if akey[tile] == hero then
- 			tileup=mget(xx,yy-1)
- 			mset(xx,yy,tileup)
-				player = hero:inst({x=xx*8,
- 			y=yy*8,
- 			z=band(tileup,15)*8+8,})
- 		-- blocks
- 		elseif akey[tile] == bridge or
-		 akey[tile] == door then
- 			bb=akey[tile]:inst({x=xx*8,
- 			y=yy*8})
- 			bb:init()
- 			add(block_list,bb) 		
- 		
- 		elseif akey[tile] == blocker then
- 			tileup=mget(xx,yy-1)
- 			mset(xx,yy,tileup)
- 			act = blocker:inst({x=xx*8,y=yy*8,z=band(tileup,15)*8+8})
- 			add(actor_list,act)
- 			bb=door:inst({x=xx*8,
- 			y=yy*8})
- 			bb:init()
- 			add(block_list,bb) 
- 		else
- 			for kk,vv in pairs(akey) do
- 				if tile == kk then
- 					tileup=mget(xx,yy-1)
- 					mset(xx,yy,tileup)
- 					act = vv:inst({x=xx*8,y=yy*8,z=band(tileup,15)*8+8})
- 					add(actor_list,act)
- 					if (tile==120) giftcount+=1
- 					if (act.sprite==96) add(dummy_list,act)
- 				end
- 			end
- 		end
- 	end
- end
- if (gameover != 2)giftcountall+=giftcount
- if hard then
-  mymom=dummy_list[1+flr(rnd()*#dummy_list)]
-  port=portal:inst({mom=mymom,x=mymom.x,y=mymom.y})
-  --port.mom = dummy_list[flr(1+rnd()*#dummy_list)]
-  add(actor_list,port)
- end
- return actor_list,player, block_list
+	-- grab all the actors
+	-- replace their tile with
+	-- the above position on map
+	giftcount,giftfind,akey = 0,0,{}
+	actor_list,block_list,dummy_list = {},{},{}
+	akey[33],akey[49],akey[34],akey[37] = bridge,door,hero,pickup
+	-- akey[49] = door
+	-- akey[34] = hero
+	-- akey[37] = pickup
+	akey[74],akey[98],akey[100],akey[50],akey[89],akey[73] = dummy,dumfire,spinfire,blocker,portal,pepper
+	--- akey[98] = dumfire
+	-- akey[100] = spinfire
+	-- akey[50],akey[89],akey[73] = blocker,portal,pepper
+	-- akey[89] = portal
+	-- akey[73] = pepper
+	akey[106],akey[104],akey[120] = friend,spring,gift
+	-- akey[104] = spring
+	-- akey[120] = gift
+	if (hard) akey[37],akey[89] = dummy,dummy
+	--for yy=0,64,1 do
+	for yy=1+levely0/8,levely1/8,1 do
+		--for xx=0,16,1 do
+		for xx=levelx0/8,levelx1/8,1 do
+			tile = mget(xx,yy)
+			--herohandler
+			if akey[tile] == hero then
+				tileup=mget(xx,yy-1)
+				mset(xx,yy,tileup)
+					player = hero:inst({x=xx*8,
+				y=yy*8,
+				z=band(tileup,15)*8+8,})
+			-- blocks
+			elseif akey[tile] == bridge or
+				akey[tile] == door then
+				bb=akey[tile]:inst({x=xx*8,
+				y=yy*8})
+				bb:init()
+				add(block_list,bb) 		
+			
+			elseif akey[tile] == blocker then
+				tileup=mget(xx,yy-1)
+				mset(xx,yy,tileup)
+				act = blocker:inst({x=xx*8,y=yy*8,z=band(tileup,15)*8+8})
+				add(actor_list,act)
+				bb=door:inst({x=xx*8,
+				y=yy*8})
+				bb:init()
+				add(block_list,bb) 
+			else
+				for kk,vv in pairs(akey) do
+					if tile == kk then
+						tileup=mget(xx,yy-1)
+						mset(xx,yy,tileup)
+						act = vv:inst({x=xx*8,y=yy*8,z=band(tileup,15)*8+8})
+						add(actor_list,act)
+						if (tile == 120) giftcount+=1
+						if (act.sprite == 96) add(dummy_list,act)
+					end
+				end
+			end
+		end
+	end
+	if (gameover != 2) giftcountall+=giftcount
+	if hard then
+		mymom=dummy_list[1+flr(rnd()*#dummy_list)]
+		port=portal:inst({mom=mymom,x=mymom.x,y=mymom.y})
+		--port.mom = dummy_list[flr(1+rnd()*#dummy_list)]
+		add(actor_list,port)
+	end
+	return actor_list,player, block_list
 end
 
 
 function actor:make_feet()
- -- initialize harry's feet
- footl = hfeet:inst({x=player.x,
- y=player.y,
- mom=self,
- shadow=false})
- footr = hfeet:inst({x=player.x,
- y=player.y,
- mom=self,
- shadow=false,
- flipme=true})
- add(actor_list,footl)
- add(actor_list,footr)
+	-- initialize harry's feet
+	footl = hfeet:inst({x=player.x,
+	y=player.y,
+	mom=self,
+	shadow=false})
+	footr = hfeet:inst({x=player.x,
+	y=player.y,
+	mom=self,
+	shadow=false,
+	flipme=true})
+	add(actor_list,footl)
+	add(actor_list,footr)
 end
 
 
@@ -392,29 +387,28 @@ function load_level()
 end
 
 function _init()
-
-gtime,gtimedec,gameover=0,0,0 --o is neither, 1 is lose, 2 is win
------
-ttime=90
---wt=0
-hard=false
-------
-health,healthloss,healthrate=100,1,30
---healthloss=1
---healthrate=30 --reduce for faster health loss
-worldtime,leveltime,worldmin,worldsec=0,0,0,0
---leveltime=0
---worldmin=0
---worldsec=0
-giftcount,giftfind,giftcountall,giftfindall,levelsbeat=0,0,0,0,0
---giftfind=0
---giftcountall=0
---giftfindall=0
---startx,starty=0,0
---starty=0
---actor_list,player,block_list,cam3d=load_level()
-load_zone(1)
-load_level()
+	gtime,gtimedec,gameover=0,0,0 --o is neither, 1 is lose, 2 is win
+	-----
+	ttime=90
+	--wt=0
+	hard=false
+	------
+	health,healthloss,healthrate=100,1,30
+	--healthloss=1
+	--healthrate=30 --reduce for faster health loss
+	worldtime,leveltime,worldmin,worldsec=0,0,0,0
+	--leveltime=0
+	--worldmin=0
+	--worldsec=0
+	giftcount,giftfind,giftcountall,giftfindall,levelsbeat=0,0,0,0,0
+	--giftfind=0
+	--giftcountall=0
+	--giftfindall=0
+	--startx,starty=0,0
+	--starty=0
+	--actor_list,player,block_list,cam3d=load_level()
+	load_zone(1)
+	load_level()
 end
 
 
@@ -427,13 +421,13 @@ function actor:stunme(ang)
 	self.dx = -2*self.speed*cos(ang)
 	self.dy = -2*self.speed*sin(ang)
 	--self:make_spit(31,5)
-	if (self.sprite==38) sfx(5)
+	if (self.sprite == 38) sfx(5)
 end
 
 function actor:collide()
 	--self.w0={}
 	self.w0=self.w
- self.w={}
+ 	self.w={}
 	for kk=0,4 do
 		self.w[kk]=false
 	end
@@ -541,28 +535,27 @@ function actor:collide()
 end
 
 function actor:update()
- -- oo updater
- -- physics
-  --player physics
- self.dz += -self.grav
- self.z += self.dz 
- self.x += self.dx
- self.y += self.dy
--- self.z += self.dz
- self.g = false
- if self.stun then
- 	self.mag = sqrt(self.dx^2 + self.dy^2)
- 	if self.mag > 0 then
- 		red = self.mag*0.8
- 		if (red < 0.1) red = 0
- 		self.dx*=red/self.mag
- 		self.dy*=red/self.mag
- 	end
- end
- --collision code
-	self:collide()
- self.spritex,self.spritey=getpixid(self.spritedraw)
- --self.tt+=1
+	-- oo updater
+	-- physics
+	-- player physics
+	self.dz += -self.grav
+	self.z += self.dz 
+	self.x += self.dx
+	self.y += self.dy
+	self.g = false
+	if self.stun then
+		self.mag = sqrt(self.dx^2 + self.dy^2)
+		if self.mag > 0 then
+			red = self.mag*0.8
+			if (red < 0.1) red = 0
+			self.dx*=red/self.mag
+			self.dy*=red/self.mag
+		end
+	end
+	--collision code
+		self:collide()
+	self.spritex,self.spritey=getpixid(self.spritedraw)
+	--self.tt+=1
 end
 
 function actor:get_entry()
@@ -651,15 +644,15 @@ function _update()
  end
  
  ht+=1
-	if ht==healthrate and not transition then
+	if ht == healthrate and not transition then
 		health+=-healthloss
 		ht=-1
 	end
  
  --hardmode activate!
--- if zonenow==1 and
--- worldtime==1 and
--- worldsec==25 and
+-- if zonenow == 1 and
+-- worldtime == 1 and
+-- worldsec == 25 and
 -- btn(1) and btn(3) and btn(5) then
 --  transition,hard,hardcount=true,true,0
 -- end
@@ -720,36 +713,36 @@ function draw_world_all()
 	drawbacks=0
 	for yd=max(max(my-farplane,0),levely0/8+1),min(my-nearplane,levely1/8),1 do
 		dist,db=cam3dy-8*(yd+1),cam3dy-8*(yd)
---		db = cam3dy-8*(yd)
+		-- db = cam3dy-8*(yd)
 		xmax,xb=shrink*dist,shrink*db
---		xb = shrink*db
+		-- xb = shrink*db
 		pixb,pix8=64*(8/xb),64*(8/xmax)
---		pix8=64*(8/xmax)
+		-- pix8=64*(8/xmax)
 		delz=8-cam3dz
 		ypixmain=cam3dymid-64*(delz+8)/xmax
 		ypixmainb=cam3dymid-64*(delz+8)/xb
 		nearp=my-nearplane
 		curplane,upl = nearp-yd,0
---		upl = 0
+		-- upl = 0
 		wp = flr((nearp-yd)/2) + widthplane/2
 		for xd=max(levelx0/8,mx-(wp)),min(mx+(wp),levelx1/8),1 do
-		 id=band(mget(xd,yd),15)
-		 left=band(mget(xd-1,yd),15)
-		 if (xd==levelx0/8) left=0
-		 up=band(mget(xd,yd-1),15)
-		 tex=2*lshr(band(mget(xd,yd),16),4)
-		 delx=(xd*8)-cam3dx
+			id=band(mget(xd,yd),15)
+			left=band(mget(xd-1,yd),15)
+			if (xd == levelx0/8) left=0
+			up=band(mget(xd,yd-1),15)
+			tex=2*lshr(band(mget(xd,yd),16),4)
+			delx=(xd*8)-cam3dx
 			xpix=64*(delx/xmax)+cam3dxmid
 			xpixb=64*(delx/xb)+cam3dxmid
 			ypix=ypixmain+pix8*(1-id)
-	  ypixb=ypixmainb+pixb*(1-id)
-	  --ypixb=ypixmainb+pixb*(1-id)
-		 if id > 0 then
-		 	-- floor
-		 	if ypixb < 128 and ypix > ypixb and curplane < simpleplane then
-		  	--thisentryfloor={xpixb,ypixb,pixb,xpix,ypix,pix8}
-		  	--add(thisrowfloor,thisentryfloor)
-		  	delxnow,delynow,delp=xpix-xpixb,ypix-ypixb,pix8-pixb
+	  		ypixb=ypixmainb+pixb*(1-id)
+			--ypixb=ypixmainb+pixb*(1-id)
+			if id > 0 then
+		 		-- floor
+				if ypixb < 128 and ypix > ypixb and curplane < simpleplane then
+				--thisentryfloor={xpixb,ypixb,pixb,xpix,ypix,pix8}
+				--add(thisrowfloor,thisentryfloor)
+				delxnow,delynow,delp=xpix-xpixb,ypix-ypixb,pix8-pixb
 					--delynow=ypix-ypixb
 					--delp=pix8-pixb
 					for pdy=0,delynow,2 do
@@ -758,43 +751,42 @@ function draw_world_all()
 						spstart=8+8*(tex+(pdy/delynow))
 						sspr(xps,spstart,8,1,xstart,ypixb+pdy,xlen+1,2)
 					end
-	 		end		 
-		 end		 
-		 if up > id then
-		 	--front
-		  for zd=max(id+1,1),up,1 do
-	  		-- go up a level for z
-	  		--push the y out too
-	  		ypixb=ypixmainb+pixb*(1-zd)--64*(1-(delz+8)/xmax)
-	  		if ypixb+pixb >0 and ypixb < 130 then
-	  			sspr(xps,0,8,8,xpixb,ypixb,pixb+1,pixb+1)
-	  		end
+				end
 		 	end
-		 	line(xpixb,ypixb,xpixb+pixb,ypixb,lc)
-  		line(xpixb,ypixb+pixb*(up-id),xpixb+pixb,ypixb+pixb*(up-id),lc)
-		 end
-		 if up<id then
-		  line(xpixb,ypixb,xpixb+pixb,ypixb,lc)
-		  if drawbacks > 0 then
-		   fillp(0b0011110000111100.1)
-		   rectfill(xpixb,ypixb+pixb,xpixb+pixb,ypixb+(id-up)*pixb,lc)
-		   fillp()
-		  end
-		 end
-		 if xpixb < xpix then
-		  --left		
-		  edge=false
-		  for zd=max(left+1,1),id,1 do
-	 	 	edge=true
-	 	 	ypix=ypixmain+pix8*(1-zd)--64*(1-(delz+8)/xmax)
-	 	 	--xpixb=64*(delx/xb)+cam3d.xmid
-  			ypixb=ypixmainb+pixb*(1-zd)
-		  	if curplane < simpleplane and ypix > -20 and ypix < 140 and xpix > 64 then
- 	   	delxnow,delynow,delp=xpix-xpixb,ypix-ypixb,pix8-pixb
- 	   	--delxnow=xpix-xpixb
-						--delynow=ypix-ypixb
-						--delp=pix8-pixb
-		
+			if up > id then
+				--front
+				for zd=max(id+1,1),up,1 do
+					-- go up a level for z
+					--push the y out too
+					ypixb=ypixmainb+pixb*(1-zd)--64*(1-(delz+8)/xmax)
+					if ypixb+pixb >0 and ypixb < 130 then
+						sspr(xps,0,8,8,xpixb,ypixb,pixb+1,pixb+1)
+					end
+				end
+				line(xpixb,ypixb,xpixb+pixb,ypixb,lc)
+				line(xpixb,ypixb+pixb*(up-id),xpixb+pixb,ypixb+pixb*(up-id),lc)
+			end
+			if up<id then
+				line(xpixb,ypixb,xpixb+pixb,ypixb,lc)
+				if drawbacks > 0 then
+					fillp(0b0011110000111100.1)
+					rectfill(xpixb,ypixb+pixb,xpixb+pixb,ypixb+(id-up)*pixb,lc)
+					fillp()
+				end
+			end
+			if xpixb < xpix then
+				--left		
+				edge=false
+				for zd=max(left+1,1),id,1 do
+					edge=true
+					ypix=ypixmain+pix8*(1-zd)--64*(1-(delz+8)/xmax)
+					--xpixb=64*(delx/xb)+cam3d.xmid
+					ypixb=ypixmainb+pixb*(1-zd)
+					if curplane < simpleplane and ypix > -20 and ypix < 140 and xpix > 64 then
+						delxnow,delynow,delp = xpix-xpixb, ypix-ypixb, pix8-pixb
+						-- delxnow=xpix-xpixb
+						-- delynow=ypix-ypixb
+						-- delp=pix8-pixb
 						if delxnow > 0 then
 							for pdx=0,delxnow,2 do
 								ystart=ypixb+delynow*(pdx/delxnow)
@@ -803,157 +795,154 @@ function draw_world_all()
 								sspr(spstart,16,1,8,xpixb+pdx,ystart,2,ylen+1)
 							end
 						end
- 	   end
-	  	end
-	  	--edge
-	   ypixb=ypixmainb+pixb*(1-id)
-  		ypix=ypixmain+pix8*(1-id)
-	  	if edge then
-	  		
-	  		line(xpixb,ypixb,xpix,ypix,lc)
-	  		line(xpixb,ypixb+pixb*(id-left),xpix,ypix+pix8*(id-left),lc)
-	  	end
-	  	--corner
-	   t1=min(id,upl)
-		  if (t1>left) line(xpixb,ypixmainb-pixb*(t1-1),xpixb,ypixmainb-pixb*(left-1),lc)		
-		  --empty back
-		  t2=max(left,up)
-		  if (t2<id) line(xpixb,ypixb,xpixb,ypixb+pixb*(id-t2),lc)		
-		  --far edge
-		  if (left>id) line(xpixb,ypixb+pixb*(id-left),xpix,ypix+pix8*(id-left),lc)
-		 else
-		 	-- right walls
-		 	edge=false
-		 	for zd=max(id+1,1),left,1 do
+					end
+				end
+				-- edge
+				ypixb=ypixmainb+pixb*(1-id)
+				ypix=ypixmain+pix8*(1-id)
+				if edge then
+					line(xpixb,ypixb,xpix,ypix,lc)
+					line(xpixb,ypixb+pixb*(id-left),xpix,ypix+pix8*(id-left),lc)
+				end
+				-- corner
+				t1=min(id,upl)
+				if (t1>left) line(xpixb,ypixmainb-pixb*(t1-1),xpixb,ypixmainb-pixb*(left-1),lc)		
+				-- empty back
+				t2=max(left,up)
+				if (t2<id) line(xpixb,ypixb,xpixb,ypixb+pixb*(id-t2),lc)		
+				-- far edge
+				if (left>id) line(xpixb,ypixb+pixb*(id-left),xpix,ypix+pix8*(id-left),lc)
+			else
+				-- right walls
+				edge=false
+				for zd=max(id+1,1),left,1 do
 					edge=true
-					ypix=ypixmain+pix8*(1-zd)--64*(1-(delz+8)/xmax)
- 		  --xpixb=64*(delx/xb)+cam3d.xmid
- 		  ypixb=ypixmainb+pixb*(1-zd)	 	  
- 		  if curplane < simpleplane and ypix > -20 and ypix < 140 and xpix < 64 then
- 		  	--thisentryrw={xpixb,ypixb,pixb,xpix,ypix,pix8}
-		   	if xpixb>0 then  
-		   	 --add(thisrowrw,thisentryrw)
-							delxnow,delynow,delp=xpix-xpixb,ypix-ypixb,pix8-pixb
-							--delynow=ypix-ypixb
-							--delp=pix8-pixb
-							--delxnow = xpix-xpixb
-		
-				 		if delxnow < 0 then
+					ypix=ypixmain+pix8*(1-zd) -- 64*(1-(delz+8)/xmax)
+					-- xpixb=64*(delx/xb)+cam3d.xmid
+					ypixb=ypixmainb+pixb*(1-zd)
+					if curplane < simpleplane and ypix > -20 and ypix < 140 and xpix < 64 then
+						-- thisentryrw = {xpixb,ypixb,pixb,xpix,ypix,pix8}
+						if xpixb>0 then  
+							-- add(thisrowrw,thisentryrw)
+							delxnow, delynow, delp = xpix-xpixb, ypix-ypixb, pix8-pixb
+							-- delynow=ypix-ypixb
+							-- delp=pix8-pixb
+							-- delxnow = xpix-xpixb
+							if delxnow < 0 then
 								for pdx=0,delxnow,-2 do
-									ystart=ypixb+delynow*(pdx/delxnow)
-									ylen=pixb+delp*(pdx/delxnow)
-									spstart=xps+8*(pdx/delxnow)
+									ystart = ypixb + delynow*(pdx/delxnow)
+									ylen = pixb + delp*(pdx/delxnow)
+									spstart = xps + 8*(pdx/delxnow)
 									--sspr(spstart,16,1,8,xpixb+pixb+pdx,ystart,1,ylen+1)
 									sspr(spstart,16,1,8,xpixb+pdx-1,ystart,2,ylen+2)
 								end
 							end
-		   	end
-		   end
-		  end
-		  --edge
-	   ypixb=ypixmainb+pixb*(1-id)
-  		ypix=ypixmain+pix8*(1-id)
-		  if edge then
-		  	line(xpixb,ypixb,xpix,ypix,lc)
-		  	line(xpixb,ypixb-pixb*(left-id),xpix,ypix-pix8*(left-id),lc)
-		  end
-		  
-		  t1=min(left,up)
-		  if (t1>id)  line(xpixb,ypixmainb-pixb*(t1-1),xpixb,ypixmainb-pixb*(id-1),lc)		
-		  --empty back
-		  t2=max(max(id,upl),up)
-		  if (t2<left) line(xpixb,ypixb-pixb*(left-id),xpixb,ypixb-pixb*(t2-id),lc)
-		  --far edge
-		  if (left<id) line(xpixb,ypixb,xpix,ypix,lc)
-		 end
-			--dif bw ul and up	
-			v1=max(max(upl,id),left)
-			v2=max(max(up,id),left)
-  	if (v1!=v2) line(xpixb,ypixmainb-pixb*(v1-1),xpixb,ypixmainb-pixb*(v2-1),lc)		
-		 --stick extra lines now
+						end
+					end
+				end
+				-- edge
+				ypixb = ypixmainb + pixb*(1-id)
+				ypix  = ypixmain +  pix8*(1-id)
+				if edge then
+					line(xpixb,ypixb,xpix,ypix,lc)
+					line(xpixb,ypixb-pixb*(left-id),xpix,ypix-pix8*(left-id),lc)
+				end
+		
+				t1 = min(left,up)
+				if (t1>id)  line(xpixb,ypixmainb-pixb*(t1-1),xpixb,ypixmainb-pixb*(id-1),lc)		
+				-- empty back
+				t2 = max(max(id,upl),up)
+				if (t2<left) line(xpixb,ypixb-pixb*(left-id),xpixb,ypixb-pixb*(t2-id),lc)
+				-- far edge
+				if (left<id) line(xpixb,ypixb,xpix,ypix,lc)
+			end
+		-- dif bw ul and up	
+		v1 = max(max(upl,id),left)
+		v2 = max(max(up,id),left)
+		if (v1!=v2) line(xpixb,ypixmainb-pixb*(v1-1),xpixb,ypixmainb-pixb*(v2-1),lc)		
+		-- stick extra lines now
 		upl=up 
 		end -- this ends the x loops
-		if yd < my-nearplane-1 then
-		for _,b in pairs(local_blocks) do
-			if b.cy == yd then
-				delx=(b.cx*8)-cam3dx
-				xpix=64*(delx/xmax)+cam3dxmid
-				xpixb=64*(delx/xb)+cam3dxmid
-				ypix=ypixmain+pix8*(1-b.z)
-	  	ypixb=ypixmainb+pixb*(1-b.z)
-	  	--top
-  		if ypix > cam3dymid then
-	  		delxnow,delynow,delp=xpix-xpixb,ypix-ypixb,pix8-pixb
-	  		--delxnow=xpix-xpixb
-					--delynow=ypix-ypixb
-					--delp=pix8-pixb
-	  		for pdy=0,delynow,2 do
-						xstart=xpixb+delxnow*(pdy/delynow)
-						xlen=pixb+delp*(pdy/delynow)
-						--spstart=b.sptopy+8*(0+(pdy/delynow))
-						spstart=8+8*(0+(pdy/delynow))
-						sspr(xps,spstart,8,1,xstart,ypixb+pdy,xlen+1,2)
-					end
+	if yd < my-nearplane-1 then
+	for _,b in pairs(local_blocks) do
+		if b.cy == yd then
+			delx=(b.cx*8)-cam3dx
+			xpix=64*(delx/xmax)+cam3dxmid
+			xpixb=64*(delx/xb)+cam3dxmid
+			ypix=ypixmain+pix8*(1-b.z)
+	ypixb=ypixmainb+pixb*(1-b.z)
+	--top
+	if ypix > cam3dymid then
+		delxnow,delynow,delp=xpix-xpixb,ypix-ypixb,pix8-pixb
+		--delxnow=xpix-xpixb
+		--delynow=ypix-ypixb
+		--delp=pix8-pixb
+		for pdy=0,delynow,2 do
+			xstart=xpixb+delxnow*(pdy/delynow)
+			xlen=pixb+delp*(pdy/delynow)
+			--spstart=b.sptopy+8*(0+(pdy/delynow))
+			spstart=8+8*(0+(pdy/delynow))
+			sspr(xps,spstart,8,1,xstart,ypixb+pdy,xlen+1,2)
+			end
+	end
+	--sides
+	for i=b.z,b.z2,-1 do
+		if xpixb < xpix and b.lineleft then
+			delxnow,delynow,delp=xpix-xpixb,ypix-ypixb,pix8-pixb
+			--delxnow=xpix-xpixb
+			--delynow=ypix-ypixb
+			--delp=pix8-pixb
+			if delxnow > 0 then
+				for pdx=0,delxnow,2 do
+					ystart=ypixb+delynow*(pdx/delxnow)
+					ylen=pixb+delp*(pdx/delxnow)
+					--spstart=b.spwallx+8*(pdx/delxnow)
+					spstart=xps+8*(pdx/delxnow)
+					sspr(spstart,16,1,8,xpixb+pdx,ystart,2,ylen+1)
 				end
-				--sides
-				for i=b.z,b.z2,-1 do
-				if xpixb < xpix and b.lineleft then
-				 delxnow,delynow,delp=xpix-xpixb,ypix-ypixb,pix8-pixb
-				 --delxnow=xpix-xpixb
-					--delynow=ypix-ypixb
-					--delp=pix8-pixb
-					if delxnow > 0 then
-						for pdx=0,delxnow,2 do
-							ystart=ypixb+delynow*(pdx/delxnow)
-							ylen=pixb+delp*(pdx/delxnow)
-							--spstart=b.spwallx+8*(pdx/delxnow)
-							spstart=xps+8*(pdx/delxnow)
-							sspr(spstart,16,1,8,xpixb+pdx,ystart,2,ylen+1)
-						end
-					end
-				elseif xpixb+pixb > xpix +pix8 and b.lineright then
-				 delxnow,delynow,delp=xpix-xpixb,ypix-ypixb,pix8-pixb
-				 --delynow=ypix-ypixb
-					--delp=pix8-pixb
-					--delxnow = xpix+pix8-(xpixb+pixb)
-		 		if delxnow < 0 then
-						for pdx=0,delxnow,-2 do
-							ystart=ypixb+delynow*(pdx/delxnow)
-							ylen=pixb+delp*(pdx/delxnow)
-							--spstart=b.spwallx+8*(pdx/delxnow)
-							spstart=xps+8*(pdx/delxnow)
-							--sspr(spstart,16,1,8,xpixb+pixb+pdx,ystart,1,ylen+1)
-							sspr(spstart,16,1,8,xpixb+pixb+pdx-1,ystart,2,ylen+1)
-						end
-					end
+			end
+		elseif xpixb+pixb > xpix +pix8 and b.lineright then
+			delxnow,delynow,delp=xpix-xpixb,ypix-ypixb,pix8-pixb
+			-- delynow=ypix-ypixb
+			-- delp=pix8-pixb
+			-- delxnow = xpix+pix8-(xpixb+pixb)
+			if delxnow < 0 then
+				for pdx=0,delxnow,-2 do
+					ystart=ypixb+delynow*(pdx/delxnow)
+					ylen=pixb+delp*(pdx/delxnow)
+					--spstart=b.spwallx+8*(pdx/delxnow)
+					spstart=xps+8*(pdx/delxnow)
+					--sspr(spstart,16,1,8,xpixb+pixb+pdx,ystart,1,ylen+1)
+					sspr(spstart,16,1,8,xpixb+pixb+pdx-1,ystart,2,ylen+1)
 				end
+			end
+		end
 	  	--front
 	  	if (b.linedown) sspr(xps,0,8,8,xpix,ypix,pix8+1,pix8+1)
 	  	line(xpix,ypix,xpix+pix8,ypix,lc)
 	  	line(xpix,ypix+pix8,xpix+pix8,ypix+pix8,lc)
 	  	ypix=ypix+pix8
 	  	ypixb=ypixb+pixb
-	  	end
-			end
-		end
-		end
-		--add actors if appropriate
-		drawbacks += -1
-		if (player.cy == yd) drawbacks=2
+	end
+	end
+	end
+	end
+	--add actors if appropriate
+	drawbacks += -1
+	if (player.cy == yd) drawbacks=2
 		for _,a in pairs(local_list) do
 			if a.cy == yd then
-			 char = a:get_entry()
-			 for _,e in pairs(char) do
-			 	--add(thisrowactor,e)
-			 	if e[8]==8 then
-			 	 pal(12,8)
-			 	elseif (e[8]) then
-			 	 palw(e[8])
-			 	end
-			 	
-				 sspr(e[4],e[5],e[6],e[6],e[1],e[2],e[3],e[3],e[7])
-				 pal()	
-			 end
+				char = a:get_entry()
+				for _,e in pairs(char) do
+					-- add(thisrowactor,e)
+					if e[8] == 8 then
+						pal(12,8)
+					elseif (e[8]) then
+						palw(e[8])
+					end
+					sspr(e[4],e[5],e[6],e[6],e[1],e[2],e[3],e[3],e[7])
+					pal()	
+				end
 			end
 		end
 		for _,b in pairs(front_blocks) do
@@ -961,13 +950,13 @@ function draw_world_all()
 				delx=(b.cx*8)-cam3dx
 				xpix=64*(delx/xmax)+cam3dxmid				
 				ypix=ypixmain+pix8*(1-b.z2)
-	   if b.linedown then
-	    sspr(xps,0,8,8,xpix,ypix,pix8+1,pix8+1)
-	   	line(xpix,ypix,xpix+pix8,ypix,lc)
- 	  	line(xpix,ypix+pix8,xpix+pix8,ypix+pix8,lc)
- 	  end
-	  end
-	 end
+				if b.linedown then
+					sspr(xps,0,8,8,xpix,ypix,pix8+1,pix8+1)
+					line(xpix,ypix,xpix+pix8,ypix,lc)
+					line(xpix,ypix+pix8,xpix+pix8,ypix+pix8,lc)
+				end
+			end
+		end
 	end
 end
 
@@ -980,8 +969,8 @@ plist={0b0000000000000000,
 
 function draw_floor()
 	dl={11,21,31,41,51}
---	c1=3
---	c2=5
+	-- c1=3
+	-- c2=5
 	ylist={}
 	
 	for _,yd in pairs(dl) do
@@ -999,25 +988,25 @@ function draw_floor()
 		yold=yp
 		i+=1
 	end
- fillp()
- --draw some guide lines
- ypl,xml={},{}
--- xml={}
- for yd=11,3,-1 do
- 	distc=8*yd+(cam3dy%8)
+	fillp()
+	-- draw some guide lines
+	ypl,xml={},{}
+	-- xml={}
+	for yd=11,3,-1 do
+		distc=8*yd+(cam3dy%8)
 		xm=shrink*distc
 		delz=-cam3dz
 		ypixmain=cam3dymid-64*(8+delz)/xm
 		line(0,ypixmain,127,ypixmain,c2)
 		add(ypl,ypixmain)
 		add(xml,xm)
- end
- for xd=-5,5,1 do
- 	xr = xd*8 - cam3dx%8
- 	x1 = (xr/xml[1])*64+64
- 	x2 = (xr/xml[#xml])*64+64
- 	line(x1,ypl[1],x2,ypl[#ypl],c2)
- end
+	end
+	for xd=-5,5,1 do
+		xr = xd*8 - cam3dx%8
+		x1 = (xr/xml[1])*64+64
+		x2 = (xr/xml[#xml])*64+64
+		line(x1,ypl[1],x2,ypl[#ypl],c2)
+	end
 end
 
 -------------
@@ -1031,13 +1020,13 @@ function palw(w)
 end
 
 function oprint(str,xnew,y)
- --xnew = x--+8-#str*2
- for xx=xnew-1,xnew+1,1 do
- 	for yy=y-1,y+1,1 do
- 		print(str,xx,yy,0)
- 	end
- end
- print(str,xnew,y,7)
+	-- xnew = x--+8-#str*2
+	for xx=xnew-1,xnew+1,1 do
+		for yy=y-1,y+1,1 do
+			print(str,xx,yy,0)
+		end
+	end
+	print(str,xnew,y,7)
 end
 
 skyc,sunc=9,15
@@ -1049,10 +1038,10 @@ function _draw()
 	circfill(64,20,10,sunc)
 	draw_floor()
 	ustat2=stat(1)
- --draw_tab()
- draw_world_all()
- ustat3=stat(1)
-	--print(stat(1))
+	-- draw_tab()
+	draw_world_all()
+	ustat3=stat(1)
+	-- print(stat(1))
 
 	color(7)
 	rectfill(0,0,127,8,1)
@@ -1175,144 +1164,143 @@ function hero:update_early()
 	end
 	-- self.dz=0
 	--controls for player
-	mult=1
+	mult=50
 	if (self.attack) mult = 0.5
 	if not transition then
- 	if (btn(0)) self.dx=-self.speed*mult
- 	if (btn(1)) self.dx=self.speed*mult
- 	if (btn(2)) self.dy=-self.speed*mult
- 	if (btn(3)) self.dy=self.speed*mult
- end
- self.dy += self.ddy
- self.dx += self.ddx
- self.mag = sqrt((self.dx^2)+(self.dy^2))
- if (self.mag > 0) self.ang = atan2(self.dx,self.dy)
- local direct =flr((8*self.ang)%8)
- bonus=sqrt(abs(self.ddx)^2+abs(self.ddy)^2)
- if self.mag > 1+bonus then
- 	self.dx *= 1/self.mag
- 	self.dy *= 1/self.mag
- end
- -- jumping
- if btn(4) and self.g then
-  if self.attack and self.mag==0 then
-   self.dz=self.jump*1.35
-   sfx(2)
-  elseif self.attack and self.mag>0 then
-  	self.ddx = 1*cos(self.ang)
-  	self.ddy = 1*sin(self.ang)
-  	self.dz=self.jump
-  	sfx(2)
-  else
-  	self.dz=self.jump
-  	sfx(1)
-  end
- end
- -- tongue
- --if (btnp(5)) draw_on = (draw_on+1)%5
- if btnp(5) and (not self.attack or (self.g and self.tt > 3)) then
-  if self.tt > 0 then
-   self.ang=self.attackang
-   for _,t in pairs(self.tongues) do
-   	t.dead=true
-   end
-  end
-  self:make_tongue(3)
-  self:make_tongue(7)
-  self.tt=0
-  self.attack=true
-  self.attackang=self.ang
-  sfx(4)
-  if not self.g then
-   self.dz = self.jump*0.75
-  end
- end
- 
- -- tongue handler
- if self.attack then
- 	self.ang = self.attackang+(self.tt/10)
- 	direct = flr((8*self.ang%8))
-  self.tt+=1
-  if self.tt > 10 and self.g then
-  	self.attack=false
-  	self.tt,self.ddy,self.ddx=0,0,0
---  	self.ddy=0
---  	self.ddx=0
+		if (btn(0)) self.dx=-self.speed*mult
+		if (btn(1)) self.dx=self.speed*mult
+		if (btn(2)) self.dy=-self.speed*mult
+		if (btn(3)) self.dy=self.speed*mult
+	end
+	self.dy += self.ddy
+	self.dx += self.ddx
+	self.mag = sqrt((self.dx^2)+(self.dy^2))
+	if (self.mag > 0) self.ang = atan2(self.dx,self.dy)
+	local direct=flr((8*self.ang)%8)
+ 	bonus=sqrt(abs(self.ddx)^2+abs(self.ddy)^2)
+	if self.mag > 1+bonus then
+		self.dx *= 1/self.mag
+		self.dy *= 1/self.mag
+	end
+ 	-- jumping
+ 	if btn(4) and self.g then
+		if self.attack and self.mag == 0 then
+			self.dz=self.jump*1.35
+			sfx(2)
+		elseif self.attack and self.mag>0 then
+			self.ddx = 1*cos(self.ang)
+			self.ddy = 1*sin(self.ang)
+			self.dz=self.jump
+			sfx(2)
+		else
+			self.dz=self.jump
+			sfx(1)
+		end
+	end
+	-- tongue
+	--if (btnp(5)) draw_on = (draw_on+1)%5
+ 	if btnp(5) and (not self.attack or (self.g and self.tt > 3)) then
+		if self.tt > 0 then
+			self.ang=self.attackang
+			for _,t in pairs(self.tongues) do
+				t.dead=true
+			end
+		end
+		self:make_tongue(3)
+		self:make_tongue(7)
+		self.tt=0
+		self.attack=true
+		self.attackang=self.ang
+		sfx(4)
+		if not self.g then
+			self.dz = self.jump*0.75
+		end
  	end
- end
  
- -- animation timer
- if (self.dx==0 and self.dy==0) self.st=0
- --drawing
- self.spritedraw = htable[direct+1]
- if (direct>2 and direct<6) self.flipframe=true
- if (direct>6 or direct<2) self.flipframe=false
-
+	-- tongue handler
+	if self.attack then
+		self.ang = self.attackang+(self.tt/10)
+		direct = flr((8*self.ang%8))
+		self.tt+=1
+		if self.tt > 10 and self.g then
+			self.attack=false
+			self.tt,self.ddy,self.ddx=0,0,0
+			-- self.ddy=0
+			-- self.ddx=0
+		end
+	end
+ 
+	-- animation timer
+	if (self.dx == 0 and self.dy == 0) self.st=0
+	--drawing
+	self.spritedraw = htable[direct+1]
+	if (direct>2 and direct<6) self.flipframe=true
+	if (direct>6 or direct<2) self.flipframe=false
 end
 
 function hero:update_late()
- self.drawx,self.drawy,self.drawz=self.x,self.y+3,self.z
+	self.drawx,self.drawy,self.drawz=self.x,self.y+3,self.z
 	--self.drawy=self.y+3
 	--self.drawz=self.z
 	if (not self.g) self.st=0
 	if (self.mag == 0) self.st = 0
- --if self.st%8 >= 4 then
- --	self.drawz += 1
- --end
- height =1-(0.5*(1+sin(0.75+(self.st%6)/6)))^3
- self.drawz += height
- self.st+=1
- if (self.st%6==2) sfx(0)
-	if self.stun then
-		self.drawx+=-1+2*rnd()
-		self.drawy+=-1+2*rnd()
-	end
-	--health
-	--self.ht+=1
-	--if self.ht==healthrate and not transition then
-	--	health+=-1
-	--	self.ht=-1
+	--if self.st%8 >= 4 then
+	--	self.drawz += 1
 	--end
-end
+	height =1-(0.5*(1+sin(0.75+(self.st%6)/6)))^3
+	self.drawz += height
+	self.st+=1
+	if (self.st%6 == 2) sfx(0)
+		if self.stun then
+			self.drawx+=-1+2*rnd()
+			self.drawy+=-1+2*rnd()
+		end
+		--health
+		--self.ht+=1
+		--if self.ht == healthrate and not transition then
+		--	health+=-1
+		--	self.ht=-1
+		--end
+	end
 
---dummy
-dummy = actor:new({sprite=96,
- spritesize=16,
- dsize=8})
- 
-function dummy:update_early()
- if self.g then
- 	self.dz = 0.7
- end
+	--dummy
+	dummy = actor:new({sprite=96,
+	spritesize=16,
+	dsize=8})
+	
+	function dummy:update_early()
+	if self.g then
+		self.dz = 0.7
+	end
 end
 
 --gift
 gift = actor:new({sprite=120,
- spritesize=8,
- health=5+10*flr(rnd()),
- grav=0.3
- })
+	spritesize=8,
+	health=5+10*flr(rnd()),
+	grav=0.3
+})
  
 function gift:update_early()
- if self.g then
- 	self.dz = 1.2
- end
- if (self.tt>0) self.tt+=-1
+	if self.g then
+		self.dz = 1.2
+	end
+	if (self.tt>0) self.tt+=-1
 end
 
 function actor:make_pickup(n)
 	for nn=1,n,1 do
 		local ang = rnd()
-	 local dx = 0.5*cos(ang)
-	 local dy = 0.5*sin(ang)
-	 mypick = pickup:inst({x=self.x,
-	 y=self.y,
-	 z=self.z+6,
-	 dx=dx,
-	 dy=dy,
-	 dz=0.75+rnd(),
-	 })
-	 add(actor_list,mypick)
+		local dx = 0.5*cos(ang)
+		local dy = 0.5*sin(ang)
+		mypick = pickup:inst({x=self.x,
+		y=self.y,
+		z=self.z+6,
+		dx=dx,
+		dy=dy,
+		dz=0.75+rnd(),
+		})
+		add(actor_list,mypick)
 	end
 end
 
@@ -1322,23 +1310,23 @@ dumfire = actor:new({sprite=98,
  dsize=8})
  
 function dumfire:update_early()
- if self.g then
- 	self.dz = 0.7
- end
- self.tt+=1
- ft=60
- if zonenow==9 then
-  ft=30
-  self.spritedraw=66
-  self.dsize=12
- end
- if self.tt%ft==0 then
-  newfire=fireball:inst({
-  x=self.x,
-  y=self.y,
-  z=self.z})
-  add(actor_list,newfire)
- end
+	if self.g then
+		self.dz = 0.7
+	end
+	self.tt+=1
+	ft=60
+	if zonenow == 9 then
+		ft=30
+		self.spritedraw=66
+		self.dsize=12
+	end
+	if self.tt%ft == 0 then
+		newfire=fireball:inst({
+		x=self.x,
+		y=self.y,
+		z=self.z})
+		add(actor_list,newfire)
+	end
 end
 
 --fireball
@@ -1347,26 +1335,26 @@ fireball = actor:new({sprite=105,
  grav=0.1})
  
 function fireball:update_early()
- self.tt+=1
- newang=atan2(player.x-self.x,player.y-self.y)
- if self.tt < 15 then
- 	self.dx+=0.1*cos(newang)
- 	self.dy+=0.1*sin(newang)
- end
- if self.w[0] or
- self.w[1] then
- 	self.dx=cos(newang)
- 	self.x+=self.dx
- end
- if self.w[2] or
- self.w[3] then
- 	self.dy=sin(newang)
- 	self.y+=self.dy
- end 
- if self.tt==100 or
- self.stun then
- 	self.dead = true
- end
+	self.tt+=1
+	newang=atan2(player.x-self.x,player.y-self.y)
+	if self.tt < 15 then
+		self.dx+=0.1*cos(newang)
+		self.dy+=0.1*sin(newang)
+	end
+	if self.w[0] or
+	self.w[1] then
+		self.dx=cos(newang)
+		self.x+=self.dx
+	end
+	if self.w[2] or
+	self.w[3] then
+		self.dy=sin(newang)
+		self.y+=self.dy
+	end 
+	if self.tt==100 or
+	self.stun then
+		self.dead = true
+	end
 end
 
 --spinfire
@@ -1375,22 +1363,22 @@ spinfire = actor:new({sprite=100,
  dsize=8})
  
 function spinfire:update_early()
- if self.g then
- 	self.dz = 0.7
- end
- self.tt+=1
- if self.tt%60==0 then
- 	for rr=8,16,8 do 
-	  newfire=spinball:inst({
-	  x=self.x,
-	  y=self.y,
-	  z=self.z,
-	  mom=self,
-	  r=rr,
-	  })
-	  add(actor_list,newfire)
-	 end
- end
+	if self.g then
+		self.dz = 0.7
+	end
+	self.tt+=1
+	if self.tt%60 == 0 then
+		for rr=8,16,8 do 
+		newfire=spinball:inst({
+		x=self.x,
+		y=self.y,
+		z=self.z,
+		mom=self,
+		r=rr,
+		})
+		add(actor_list,newfire)
+		end
+	end
 end
 
 spinball = actor:new({sprite=105,
@@ -1399,47 +1387,39 @@ spinball = actor:new({sprite=105,
  grav=0})
  
 function spinball:update_early()
- self.tt+=1
-	self.x = self.mom.x
-	self.y = self.mom.y
-	self.z = self.mom.z
-	self.x += self.r*cos(self.ang-.125+(self.tt)/60)
-	self.y += self.r*sin(self.ang-.125+(self.tt)/60)
- if self.tt==60 or
- self.stun or self.mom.dead then
- 	self.dead = true
- end
+	self.tt+=1
+		self.x = self.mom.x
+		self.y = self.mom.y
+		self.z = self.mom.z
+		self.x += self.r*cos(self.ang-.125+(self.tt)/60)
+		self.y += self.r*sin(self.ang-.125+(self.tt)/60)
+	if self.tt == 60 or self.stun or self.mom.dead then
+		self.dead = true
+	end
 end
 
 --spring
-spring = actor:new({sprite=104,
-	spritesize=8,
-	})
+spring = actor:new({sprite=104,spritesize=8,})
 
- 
 --portal
-portal = actor:new({sprite=89,
-	grav=0.1,
- spritesize=8})
+portal = actor:new({sprite=89,grav=0.1,spritesize=8})
 
 function portal:update_early()
- if self.g then
- 	self.dz = 0.7
- end
- if hard then
-  if (not self.mom.dead) self.z,self.x,self.y,self.dz = self.mom.z+16,self.mom.x,self.mom.y,0
+	if self.g then
+		self.dz = 0.7
+	end
+	if hard then
+		if (not self.mom.dead) self.z,self.x,self.y,self.dz = self.mom.z+16,self.mom.x,self.mom.y,0
 	end
 end
 
 --pepper
-pepper = actor:new({sprite=73,
-	grav=0.5,
- spritesize=8})
+pepper = actor:new({sprite=73,grav=0.5,spritesize=8})
 
 function pepper:update_early()
- if self.g then
- 	self.dz = 3
- end
+	if self.g then
+		self.dz = 3
+	end
 end
 
 --blocker
@@ -1450,16 +1430,15 @@ blocker = actor:new({sprite=64,
  dsize=10})
  
 function blocker:update_early()
- if self.g then
- 	self.dz = 2.3
- end
+	if self.g then
+		self.dz = 2.3
+	end
 end
 
 --actor's feet
-hfeet = actor:new({sprite=36,
- dsize=4,
+hfeet = actor:new({sprite=36,dsize=4,
 -- shadow = false,
- })
+})
 
 function hfeet:update()
 --	self.x = player.x+2
@@ -1476,19 +1455,19 @@ function hfeet:update_late()
 	loop=10
 	if (not self.mom.g) st = loop/4
 	if self.flipme then
-	 self.x += -1.5*sin(self.mom.ang)
-	 self.y += 2*cos(self.mom.ang)
-	 --moving
-	 self.x += -1.5*sin(self.mom.ang+0.25)*sin((st%loop)/loop)
-	 self.y += 2*cos(self.mom.ang+0.25)*sin((st%loop)/loop)
-	 self.z += 1*(1+0.5*(sin(.25+(st%(loop/2))/(loop/2))))
+		self.x += -1.5*sin(self.mom.ang)
+		self.y += 2*cos(self.mom.ang)
+		--moving
+		self.x += -1.5*sin(self.mom.ang+0.25)*sin((st%loop)/loop)
+		self.y += 2*cos(self.mom.ang+0.25)*sin((st%loop)/loop)
+		self.z += 1*(1+0.5*(sin(.25+(st%(loop/2))/(loop/2))))
 	else
-	 self.x += 1.5*sin(self.mom.ang)
-	 self.y += -2*cos(self.mom.ang)
-	 --moving
-	 self.x += 1.5*sin(self.mom.ang+0.25)*sin((st%loop)/loop)
-	 self.y += -2*cos(self.mom.ang+0.25)*sin((st%loop)/loop)
-	 self.z += 1*(1+0.5*(sin(.25+(st%(loop/2))/(loop/2))))
+		self.x += 1.5*sin(self.mom.ang)
+		self.y += -2*cos(self.mom.ang)
+		--moving
+		self.x += 1.5*sin(self.mom.ang+0.25)*sin((st%loop)/loop)
+		self.y += -2*cos(self.mom.ang+0.25)*sin((st%loop)/loop)
+		self.z += 1*(1+0.5*(sin(.25+(st%(loop/2))/(loop/2))))
 	end
 	self.drawx=self.x
 	self.drawy=self.y+3
@@ -1520,37 +1499,22 @@ function tongue:update_late()
 end
 
 function actor:make_tongue(r)
-	mytongue = tongue:inst({x=self.x,
- y=self.y,
- shadow = false,
- mom=self,
- ang=self.ang,
- r=r})
- add(actor_list,mytongue)
- add(self.tongues,mytongue)
+	mytongue = tongue:inst({x=self.x,y=self.y,shadow = false,mom=self,ang=self.ang,r=r})
+	add(actor_list,mytongue)
+	add(self.tongues,mytongue)
 end
 
 -- spit particle
-spit = actor:new({sprite=52,
-	dsize=3})
+spit = actor:new({sprite=52,dsize=3})
 
 function actor:make_spit(sp,loop)
 	--pal(7,c)
 	for i=1,loop,1 do
-	 local ang = rnd()
-	 local dx = cos(ang)
-	 local dy = sin(ang)
-	 myspit = spit:inst({x=self.x,
-	 y=self.y,
-	 z=self.z,
-	 dx=dx,
-	 dy=dy,
-	 dz=0.75+rnd(),
-	 shadow=false,
-	 sprite=sp,
-	 spritedraw=sp,
-	 })
-	 add(actor_list,myspit)
+		local ang = rnd()
+		local dx = cos(ang)
+		local dy = sin(ang)
+		myspit = spit:inst({x=self.x,y=self.y,z=self.z,dx=dx,dy=dy,dz=0.75+rnd(),shadow=false,sprite=sp,spritedraw=sp,})
+		add(actor_list,myspit)
 	end
 end
 
@@ -1566,13 +1530,14 @@ function spit:update_late()
 end
 
 function spit:update()
- -- oo updater
- -- physics
-  --player physics
- self.dz += -self.grav
- self.z += self.dz 
- self.x += self.dx
- self.y += self.dy
+	-- oo updater
+	-- physics
+	--player physics
+	self.dz += -self.grav
+	self.z += self.dz 
+	self.x += self.dx
+	self.y += self.dy
+	print(self.dx, 10, 10, 0)
 end
 
 -- pickup
@@ -1583,10 +1548,10 @@ pickup = actor:new({sprite=37,
  })
  
 function pickup:update_early()
- if self.g then
- 	self.dx,self.dy = 0,0
--- 	self.dy = 0
- end
+	if self.g then
+ 		self.dx,self.dy = 0,0
+		--self.dy = 0
+	end
 end
 
 -->8
@@ -1594,63 +1559,63 @@ end
 block={}
 function block:new(o)
 	--use this for making subclasses
- o=o or {}
- o.x = o.x or 0
- o.y = o.y or 0
- o.z = o.z or 0
- o.z2 = o.z2 or o.z
- o.cx,o.cy = 0,0
--- o.cy = 0
+	o=o or {}
+	o.x = o.x or 0
+	o.y = o.y or 0
+	o.z = o.z or 0
+	o.z2 = o.z2 or o.z
+	o.cx,o.cy = 0,0
+	-- o.cy = 0
  	-- visual stuff, camera pov
- o.sptop = o.sptop or 0
- o.sptopx,o.sptopy = 0,0
--- o.sptopy = 0
- o.spwall = o.spwall or 0
- o.spwallx,o.spwally = 0,0
--- o.spwally = 0
- o.lineup,o.linedown,o.lineleft,o.lineright = false,false,false,false
--- o.linedown = false
--- o.lineleft = false
--- o.lineright = false
- setmetatable(o,self)
- self.__index=self
- return o
+	o.sptop = o.sptop or 0
+	o.sptopx,o.sptopy = 0,0
+	-- o.sptopy = 0
+	o.spwall = o.spwall or 0
+	o.spwallx,o.spwally = 0,0
+	-- o.spwally = 0
+	o.lineup,o.linedown,o.lineleft,o.lineright = false,false,false,false
+	-- o.linedown = false
+	-- o.lineleft = false
+	-- o.lineright = false
+	setmetatable(o,self)
+	self.__index=self
+	return o
 end
 
 function block:inst(o)
 	--use this to actually create an instance ingame
- o=o or {}
- local a={}
- for k,v in pairs(self) do
- 	a[k] = v
- end
- -- special loop
- for k,v in pairs(o) do
- 	a[k] = v
- end
- setmetatable(a,self)
- self.__index=self
- return a
+	o=o or {}
+	local a={}
+	for k,v in pairs(self) do
+		a[k] = v
+	end
+	-- special loop
+	for k,v in pairs(o) do
+		a[k] = v
+	end
+	setmetatable(a,self)
+	self.__index=self
+	return a
 end
 
 bridge = block:new({
- sptop = 33,--16,
- spwall = 51--49
+	sptop = 33,--16,
+	spwall = 51--49
 })
 
 function bridge:init()
 	xh,yh=simplexy(self.x,self.y)
- local dlist={}
- left=mget(xh-1,yh)
- if (left < 32) add(dlist,left%16)
+	local dlist={}
+	left=mget(xh-1,yh)
+	if (left < 32) add(dlist,left%16)
 	right=mget(xh+1,yh)
 	if (right < 32) add(dlist,right%16)
 	down=mget(xh,yh+1)
-	--if (down < 32) add(dlist,down%16)
+	-- if (down < 32) add(dlist,down%16)
 	up=mget(xh,yh-1)
 	if (up < 32) add(dlist,up%16)
 	highest,lowest=dlist[1],dlist[1]
---	lowest=dlist[1]
+	--	lowest=dlist[1]
 	for _,v in pairs(dlist) do
 		highest=max(highest,v)
 		lowest=min(lowest,v)
@@ -1658,12 +1623,12 @@ function bridge:init()
 	nol,nor,nod = false,false,false
 	for _,bb in pairs(block_list) do
 		if bb.x == self.x then
-			if abs(bb.y-self.y)==8 then
+			if abs(bb.y-self.y) == 8 then
 				highest = bb.z
 				if (bb.y > self.y) nod = true
 			end
 		elseif bb.y == self.y then
-			if abs(bb.x-self.x)==8 then
+			if abs(bb.x-self.x) == 8 then
 				highest = bb.z
 				if (bb.x > self.x) nor = true
 				if (bb.x < self.x) nol = true
@@ -1685,24 +1650,24 @@ end
 
 door = block:new({
 	sptop=16,
- spwall=49
- })
+	spwall=49
+})
 
 gx,gy = 8,60
 ga={}
 function door:init()
 	xh,yh=simplexy(self.x,self.y)
- local dlist={}
- left=mget(xh-1,yh)
- if (left < 32) add(dlist,left%16)
+	local dlist={}
+	left=mget(xh-1,yh)
+	if (left < 32) add(dlist,left%16)
 	right=mget(xh+1,yh)
 	if (right < 32) add(dlist,right%16)
 	down=mget(xh,yh+1)
-	--if (down < 32) add(dlist,down%16)
+	-- if (down < 32) add(dlist,down%16)
 	up=mget(xh,yh-1)
 	if (up < 32) add(dlist,up%16)
 	highest,lowest=dlist[1],dlist[1]
---	lowest=dlist[1]
+	-- lowest=dlist[1]
 	for _,v in pairs(dlist) do
 		highest=max(highest,v)
 		lowest=min(lowest,v)
@@ -1710,20 +1675,20 @@ function door:init()
 	nol,nor,nod = false,false,false
 	for _,bb in pairs(block_list) do
 		if bb.x == self.x then
-			if abs(bb.y-self.y)==8 then
+			if abs(bb.y-self.y) == 8 then
 				highest = bb.z
 				if (bb.y > self.y) nod = true
 			end
 		elseif bb.y == self.y then
-			if abs(bb.x-self.x)==8 then
+			if abs(bb.x-self.x) == 8 then
 				highest = bb.z
 				if (bb.x > self.x) nor = true
 				if (bb.x < self.x) nol = true
 			end
 		end
 	end
-	--xh,yh=simplexy(self.x,self.y)
-	if (xh==gx and yh==gy) ga=dlist
+	-- xh,yh=simplexy(self.x,self.y)
+	if (xh == gx and yh == gy) ga=dlist
 	self.z = highest
 	if (left%16 < self.z and left < 32 and not nol) self.lineleft=true
 	if (right%16 < self.z and right < 32 and not nor) self.lineright=true
@@ -1863,20 +1828,20 @@ end
 
 --menu
 function hop_zone()
- giftfindall+=giftfind
- zonenow += 1
- if hard then
-  zonenow,healthrate=1+flr(rnd()*#zone),flr(healthrate-10/healthloss)
-  if healthrate <= 15 then
-  	healthloss*=2
-  	healthrate*=2
-  end
- end
- if zonenow > #zone then
- 	zonenow,gameover = 1,2
- end
- load_zone(zonenow)
- load_level()
+	giftfindall+=giftfind
+	zonenow += 1
+	if hard then
+		zonenow,healthrate=1+flr(rnd()*#zone),flr(healthrate-10/healthloss)
+		if healthrate <= 15 then
+			healthloss*=2
+			healthrate*=2
+		end
+	end
+	if zonenow > #zone then
+		zonenow,gameover = 1,2
+	end
+	load_zone(zonenow)
+	load_level()
 end
 
 --function starthardmode()
