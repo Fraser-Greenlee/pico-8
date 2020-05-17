@@ -146,8 +146,8 @@ function _init()
  p={
  p=v_mul({82,16},32),
  v={0,0},
- speed={0.7,0.7},
- max_speed=3,
+ speed={1.0,1.0},
+ max_speed=4,
  cur_speed=0,
  damping=0.8,
  a=0.75,
@@ -191,7 +191,7 @@ function _init()
   p=v_add(v_mul({107,84},32),{rnd(cell_size),rnd(cell_size)})
  })
  
- p.r=4 
+ p.r=4
  p.r2=p.r*p.r
  cam={
  p=v_sub(p.p,{64,64+128}),
@@ -736,7 +736,7 @@ function _update()
     menu-=1
     sfx(7,1)
     if btnp"4" then
-     p.c={4,10,3}
+     p.c={12,1,12}
      p.duck=4
     else
      p.c={6,10,4}
@@ -784,9 +784,9 @@ function _update()
   p.quack_timer=10
   cam.p=v_add(cam.p,{cos(p.a)*-2,sin(p.a)*-2})
  end
- 
+
  p.quack_timer=max(0,p.quack_timer-1)
- 
+
  perspective_offset={64+sin(time()/9)*4,80+sin(time()/11)*4}
  
  
@@ -812,9 +812,9 @@ function _update()
  end
  
  p.p=v_add(p.p,p.v)
- 
+
  -- camera
- cam.offset=v_add(v_mul(p.v,-15),{64,64})
+ cam.offset=v_add(v_mul(p.v,-20),{64,64})
  if menu!=nil then
   cam.offset[2]+=128+menu*1.5
  end
@@ -1347,16 +1347,10 @@ function d_player(shadow)
   local c
   if p.cell and p.cell.biome.foot_sfx==1 then
    if time()*2%1 > 0.5 then
-   spr(46,
-   p.p[1]+shadow_offset[1]*p.height-8,
-   p.p[2]+shadow_offset[2]*p.height-8,
-   2,2)
+    spr(46, p.p[1]+shadow_offset[1]*p.height-8, p.p[2]+shadow_offset[2]*p.height-8, 2,2)
    end
   end
-  circfill(
-  p.p[1]+shadow_offset[1]*p.height,
-  p.p[2]+shadow_offset[2]*p.height,
-  p.r,5)
+  circfill(p.p[1]+shadow_offset[1]*p.height, p.p[2]+shadow_offset[2]*p.height, p.r,1)
  else
   local s=p.cur_speed/p.max_speed*p.r/5+0.5
   local p1={p.p[1],p.p[2]}
@@ -1366,11 +1360,11 @@ function d_player(shadow)
   }
   
   circfill(p1[1],p1[2],p.r*3/4,p.c[1])
-  circfill(p2[1],p2[2],p.r/2,p.c[2])
-  p2=v_lerp(p1,p2,0.75)
+  p3=v_lerp(p1,p2,0.75)
+  circfill(p3[1],p3[2],p.r/2,p.c[2])
   circfill(p2[1],p2[2],p.r/2,p.c[3])
-  p2=v_lerp(p1,p2,0.5)
-  pset(p2[1],p2[2],0)
+  --p2=v_lerp(p1,p2,-0.5)
+  --pset(p2[1],p2[2],0)
   end
 end
 
