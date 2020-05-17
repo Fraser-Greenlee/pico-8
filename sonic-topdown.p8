@@ -1,22 +1,13 @@
 pico-8 cartridge // http://www.pico-8.com
 version 27
 __lua__
---starbase
---by pixelcod
+-- 2D Sonic Utopia
+-- copy of starbase by pixelcod
+
+-- Idea is to give momentum in a top-down sonic game that feels like sonic utopia.
 
 -- todo:
 -- -----
-
--- shop:
---  -add diff lasers
---  -add diff boosters
-
--- tutorial:
---  -building section
-
--- music:
---  -get good
---  -make track
 
 function blink(spd)
  if(b==nil) b=0
