@@ -10,162 +10,170 @@ function draw_menu()
  print("p12=",28,80,7)
 end
 
-function draw_cells()
- for i=0,5 do
-  for j=0,5 do
-   if cells[i][j]==0 then --none
-    spr(4,i*8,j*8)
-   elseif cells[i][j]==1 then --normal state
-    spr(3,i*8,j*8)
-   elseif cells[i][j]==2 then --abnormal state
-    spr(2,i*8,j*8)
-   end
-  end
- end
+function empty_grid(size)
+    holder = {}
+    for i=0,size do
+        cells_line = {}
+        for j=0,size do
+            cells_line[j] = 0
+        end
+        holder[i] = cells_line
+    end
+    return holder
 end
 
-function cell_update()
- for i=0,15 do
-  for j=0,15 do
-   near_state = get_near_state(i,j)
-   sp12 = p12*(near_state[3])
-   sp01 = p01*(near_state[2])
-   sp21 = p21
-   sp20 = p20
-   if cells[i][j]==0 then
-    if rnd(1) < sp01 then
-     cells[i][j]=1
+is_running = false
+is_paused = false
+frames_per_grid_update=1
+state_grid_size=10
+state_grid=empty_grid(state_grid_size)
+-- make starting level state
+state_grid[5][5]=1
+--
+new_state_grid={}
+rule_grid_size=3
+rule_grid=empty_grid(rule_grid_size)
+cell_size=8
+
+
+function draw_grid(grid)
+    for i=1,#grid do
+        for j=1,#grid[0] do
+            if grid[i][j]==0 then --none
+                spr(4,i*cell_size,j*cell_size)
+            elseif state_grid[i][j]%2==0 then --recent state
+                state_grid[i][j]=0
+                spr(2,i*cell_size,j*cell_size)
+            elseif state_grid[i][j]%2==1 then --active state
+                state_grid[i][j]=1
+                spr(3,i*cell_size,j*cell_size)
+            end
+        end
     end
-   elseif cells[i][j]==1 then
-    if rnd(1) < sp12 then
-     cells[i][j]=2
-     sfx(0)
-    end
-   elseif cells[i][j]==2 then
-    if rnd(1) < sp21 then
-     cells[i][j]=1
-    elseif rnd(1) < sp20 then
-     cells[i][j]=0
-    end
-   end
-  end
- end
 end
 
-function get_near_state(i,j)
- num_s0 = 0
- num_s1 = 0
- num_s2 = 0
- check_list = {{i-1,j},{i-1,j-1},{i-1,j+1},{i,j-1},{i,j+1},{i+1,j},{i+1,j+1},{i+1,j-1}}
- for v in all(check_list) do
-  if (v[1] > -1) and (v[2] > -1) and (v[1] < 16) and (v[2] < 16) then
-   if cells[v[1]][v[2]]==0 then
-    num_s0 += 1
-   elseif cells[v[1]][v[2]]==1 then
-    num_s1 += 1
-   elseif cells[v[1]][v[2]]==2 then
-    num_s2 += 1
-   end
-  end
- end
- if not(num_s0 + num_s1 + num_s2 == 9) then
-  num_s0 = 9 - num_s1 - num_s2
- end
- return {num_s0,num_s1,num_s2}
+function inc_state_cell(i, j)
+    if i>=1 and j>=1 and i<=grid_size and j<=grid_size then
+        if state_grid[i][j]==1 then
+            new_state_grid[i][j]=1
+        else
+            new_state_grid[i][j]=0
+        end
+    end
+end
+
+function apply_rule_to_cell(i, j)
+    for im=-1,1 do
+        for jm=-1,1 do
+            if rule_grid[im][jm] then
+                inc_state_cell(i+im, j+jm)
+            end
+        end
+    end
+end
+
+function apply_rule()
+    new_state_grid = empty_grid(state_grid_size)
+    for i=1,state_grid_size do
+        for j=1,state_grid_size do
+            if state_grid[i][j] == 1 then
+                apply_rule_to_cell(i, j)
+            end
+        end
+    end
+    state_grid = new_state_grid
+end
+
+function show_title()
+    sspr(0,16,80,8,20,40,100,10)
 end
 
 function _init()
- cursor = {}
- cursor.i = 0
- cursor.j = 0
- cells = {}
- times = {}
- update_time = 0
- p12 = 0.001 --turn abnormal(1 to 2)
- p01 = 0.0001 --gengrate new(0 to 1)
- p21 = 0.0006 --cure
- p20 = 0.0003 --dead
- isstart = false
-
- for i=0,15 do
-  cells_line = {}
-  for j=0,15 do
-   cells_line[j] = 1
-  end
-  cells[i] = cells_line
- end
- cls(1)
- sspr(0,16,80,8,20,40,100,10)
- print('press z to turn the cells blue', 4, 70, 5)
- print('press z to turn the cells blue', 4, 80, 5)
- print('press ヤよや to start', 32, 90, 6)
-
+    cursor = {}
+    cursor.i = 0
+    cursor.j = 0
+    is_start = false
+    cls()
+    show_title()
+    print('press z to turn the cells blue', 4, 70, 5)
+    print('press z to turn the cells blue', 4, 80, 5)
+    print('press ヤよや to start', 32, 90, 6)
 end
 
 function _draw()
- if isstart then
-  cls(1)
-  draw_cells()
-  sspr(8,0,8,8,cursor.i*8,cursor.j*8)
- else
-  cls(1)
-  sspr(0,16,80,8,20,40,100,10)
-  print('❎ -', 40, 70, 6)
-  print('turn red',60,70,8)
-  print('🅾️ -', 40, 80, 6)
-  print('turn blue',60,80,12)
-  if update_time%40<20 then
-   print('press ❎ to start', 32, 100, 6)
-  end
- end
+    cls()
+    if is_start then
+        draw_grid()
+        sspr(8,0,8,8,cursor.i*cell_size,cursor.j*cell_size)
+    else
+        show_title()
+        print('❎ -', 40, 70, 6)
+        print('turn red',60,70,8)
+        print('🅾️ -', 40, 80, 6)
+        print('turn blue',60,80,12)
+        if update_time%40<20 then
+            nt('press ❎ to start', 32, 100, 6)
+        end
+    end
+end
+
+function limit_index(i, max_val)
+    if i < 1 then
+        return i+#rule_grid[0]
+    elseif i > #rule_grid[0] then
+        return i-#rule_grid[0]
+    end
+end
+
+function cursor_controls()
+    if btnp(0,0) then
+        cursor.i -= 1
+    elseif btnp(1,0) then
+        cursor.i += 1
+    elseif btnp(2,0) then
+        cursor.j -= 1
+    elseif btnp(3,0) then
+        cursor.j += 1
+    end
+    cursor.i = limit_index(cursor.i, #rule_grid)
+    cursor.j = limit_index(cursor.j, #rule_grid[0])
+    if btnp(4,0) or btnp(5,0) then
+        rule_grid[cursor.i][cursor.j]=(rule_grid[cursor.i][cursor.j]+1)%2
+        sfx(0)
+    end
+end
+
+function game_update()
+    if update_time % frames_per_grid_update == 0 then
+        apply_rule()
+    end
+    cursor_controls()
+end
+
+function menu_update()
+    if btnp(4,0) or btnp(5,0) then
+        is_start = true
+        update_time = 0
+    end
 end
 
 function _update()
-update_time += 1
- if isstart then
-  if update_time%1==0 then
-   cell_update()
-  end
-  if btnp(0,0) then
-   cursor.i -= 1
-  elseif btnp(1,0) then
-   cursor.i += 1
-  elseif btnp(2,0) then
-   cursor.j -= 1
-  elseif btnp(3,0) then
-   cursor.j += 1
-  elseif btnp(4,0) then
-   cells[cursor.i][cursor.j]=1
-   sfx(0)
-  elseif btnp(5,0) then
-   cells[cursor.i][cursor.j]=2
-   sfx(0)
-  end
-  if cursor.i < 0 then
-   cursor.i += 16
-  elseif cursor.i > 15 then
-   cursor.i -= 16
-  elseif cursor.j < 0 then
-   cursor.j += 16
-  elseif cursor.j > 15 then
-   cursor.j -= 16
-  end
- else
-  if btnp(4,0) or btnp(5,0)then
-   isstart = true
-   update_time = 0
-  end
- end
-end 
+    update_time += 1
+    if is_start then
+        game_update()
+    else
+        menu_update()
+    end
+end
 __gfx__
-00000000aaa00aaa7666666776666667766666675333333333333500000000008222222222222222222228000000000000000000000000000000000000000000
-00000000a000000a6777777667777776600000063337733333333300000000002277222222222222222222000000000000000000000000000000000000000000
-00700700a000000a67dddd7667cccc76600000063373373377733300000000002722727222222222222722000000000000000000000000000000000000000000
-000770000000000067dddd7667cccc76600000063733333733373300000000002272277722272777727772000000000000000000000000000000000000000000
-000770000000000067dddd7667cccc76600000063733773733373300000000002227227227772272722722000000000000000000000000000000000000000000
-00700700a000000a67dddd7667cccc76600000063373373733373300000000002722727227272272222722000000000000000000000000000000000000000000
-00000000a000000a6777777667777776600000063337733377733300000000002277227727777272222772000000000000000000000000000000000000000000
-00000000aaa00aaa7666666776666667766666675333333333333500000000008222222222222222222228000000000000000000000000000000000000000000
+00000000aaa00aaa7666666776666667766666675333333333335000555555555555500000000000000000000000000000000000000000000000000000000000
+00000000a000000a6777777667777776600000063337733333333000555775555555500000000000000000000000000000000000000000000000000000000000
+00700700a000000a67dddd7667cccc76600000063373373377733000557557557775500000000000000000000000000000000000000000000000000000000000
+000770000000000067dddd7667cccc76600000063733333733373000575555575557500000000000000000000000000000000000000000000000000000000000
+000770000000000067dddd7667cccc76600000063733773733373000575577575557500000000000000000000000000000000000000000000000000000000000
+00700700a000000a67dddd7667cccc76600000063373373733373000557557575557500000000000000000000000000000000000000000000000000000000000
+00000000a000000a6777777667777776600000063337733377733000555775557775500000000000000000000000000000000000000000000000000000000000
+00000000aaa00aaa7666666776666667766666675333333333335000555555555555500000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
