@@ -1159,11 +1159,11 @@ function hero:update_early()
 	self.dx,self.dy=0,0
 	--self.dy=0
 	if self.supert > 0 then
-	 self.supert += -1
-	 if (self.supert<=0) self.super=false
+		self.supert += -1
+		if (self.supert<=0) self.super=false
 	end
 	-- self.dz=0
-	--controls for player
+	-- controls for player
 	mult=50
 	if (self.attack) mult = 0.5
 	if not transition then
@@ -1181,6 +1181,15 @@ function hero:update_early()
 	if self.mag > 1+bonus then
 		self.dx *= 1/self.mag
 		self.dy *= 1/self.mag
+	end
+	if (btn(0)) then
+		print(self.speed*mult, 10, 10, 0)
+		print(self.dx, 10, 20, 0)
+		print(self.ddx, 10, 30, 0)
+		print(self.mag, 10, 40, 0)
+		print(1+bonus, 10, 50, 0)
+		print(1/self.mag, 10, 60, 0)
+		stop()
 	end
  	-- jumping
  	if btn(4) and self.g then
@@ -1293,21 +1302,13 @@ function actor:make_pickup(n)
 		local ang = rnd()
 		local dx = 0.5*cos(ang)
 		local dy = 0.5*sin(ang)
-		mypick = pickup:inst({x=self.x,
-		y=self.y,
-		z=self.z+6,
-		dx=dx,
-		dy=dy,
-		dz=0.75+rnd(),
-		})
+		mypick = pickup:inst({x=self.x,y=self.y,z=self.z+6,dx=dx,dy=dy,dz=0.75+rnd(),})
 		add(actor_list,mypick)
 	end
 end
 
 --dumfire
-dumfire = actor:new({sprite=98,
- spritesize=16,
- dsize=8})
+dumfire = actor:new({sprite=98,spritesize=16,dsize=8})
  
 function dumfire:update_early()
 	if self.g then
@@ -1330,9 +1331,7 @@ function dumfire:update_early()
 end
 
 --fireball
-fireball = actor:new({sprite=105,
- spritesize=8,
- grav=0.1})
+fireball = actor:new({sprite=105,spritesize=8,grav=0.1})
  
 function fireball:update_early()
 	self.tt+=1
@@ -1358,9 +1357,7 @@ function fireball:update_early()
 end
 
 --spinfire
-spinfire = actor:new({sprite=100,
- spritesize=16,
- dsize=8})
+spinfire = actor:new({sprite=100,spritesize=16,dsize=8})
  
 function spinfire:update_early()
 	if self.g then
@@ -1370,22 +1367,20 @@ function spinfire:update_early()
 	if self.tt%60 == 0 then
 		for rr=8,16,8 do 
 		newfire=spinball:inst({
-		x=self.x,
-		y=self.y,
-		z=self.z,
-		mom=self,
-		r=rr,
+			x=self.x,
+			y=self.y,
+			z=self.z,
+			mom=self,
+			r=rr,
 		})
 		add(actor_list,newfire)
 		end
 	end
 end
 
-spinball = actor:new({sprite=105,
- spritesize=8,
+spinball = actor:new({sprite=105,spritesize=8,grav=0})
 -- r=8,
- grav=0})
- 
+
 function spinball:update_early()
 	self.tt+=1
 		self.x = self.mom.x
@@ -1423,11 +1418,7 @@ function pepper:update_early()
 end
 
 --blocker
-blocker = actor:new({sprite=64,
- spritesize=16,
- grav=0.5,
- hb=6,
- dsize=10})
+blocker = actor:new({sprite=64,spritesize=16,grav=0.5,hb=6,dsize=10})
  
 function blocker:update_early()
 	if self.g then
@@ -1451,22 +1442,23 @@ function hfeet:update_late()
 	self.x = self.mom.x+2
 	self.y = self.mom.y
 	self.z = self.mom.z-4.5
-	st=self.mom.st-1
-	loop=10
+	st = self.mom.st-1
+	loop = 10
 	if (not self.mom.g) st = loop/4
+	local sin_st = sin((st%loop)/loop)
 	if self.flipme then
 		self.x += -1.5*sin(self.mom.ang)
 		self.y += 2*cos(self.mom.ang)
 		--moving
-		self.x += -1.5*sin(self.mom.ang+0.25)*sin((st%loop)/loop)
-		self.y += 2*cos(self.mom.ang+0.25)*sin((st%loop)/loop)
+		self.x += -1.5*sin(self.mom.ang+0.25)*sin_st
+		self.y += 2*cos(self.mom.ang+0.25)*sin_st
 		self.z += 1*(1+0.5*(sin(.25+(st%(loop/2))/(loop/2))))
 	else
 		self.x += 1.5*sin(self.mom.ang)
 		self.y += -2*cos(self.mom.ang)
 		--moving
-		self.x += 1.5*sin(self.mom.ang+0.25)*sin((st%loop)/loop)
-		self.y += -2*cos(self.mom.ang+0.25)*sin((st%loop)/loop)
+		self.x += 1.5*sin(self.mom.ang+0.25)*sin_st
+		self.y += -2*cos(self.mom.ang+0.25)*sin_st
 		self.z += 1*(1+0.5*(sin(.25+(st%(loop/2))/(loop/2))))
 	end
 	self.drawx=self.x
@@ -1532,12 +1524,11 @@ end
 function spit:update()
 	-- oo updater
 	-- physics
-	--player physics
+	-- player physics
 	self.dz += -self.grav
 	self.z += self.dz 
 	self.x += self.dx
 	self.y += self.dy
-	print(self.dx, 10, 10, 0)
 end
 
 -- pickup
@@ -1549,9 +1540,9 @@ pickup = actor:new({sprite=37,
  
 function pickup:update_early()
 	if self.g then
- 		self.dx,self.dy = 0,0
-		--self.dy = 0
+		self.dx,self.dy = 0,0
 	end
+	--self.dy = 0
 end
 
 -->8
@@ -1663,7 +1654,7 @@ function door:init()
 	right=mget(xh+1,yh)
 	if (right < 32) add(dlist,right%16)
 	down=mget(xh,yh+1)
-	-- if (down < 32) add(dlist,down%16)
+	-- if down < 32 add(dlist,down%16)
 	up=mget(xh,yh-1)
 	if (up < 32) add(dlist,up%16)
 	highest,lowest=dlist[1],dlist[1]
