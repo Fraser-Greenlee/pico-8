@@ -463,11 +463,7 @@ function pilot_ship()
  --ship jet booster particles
  if dir_pressed() then
   for i=1,10 do
-   create_part(ship.x+4,
-               ship.y+4,
-        -ship.dx+rnd(0.50)-0.25,
-        -ship.dy+rnd(0.50)-0.25,
-         0,2,2,9)
+   create_part(ship.x+4, ship.y+4, -ship.dx+rnd(0.50)-0.25, -ship.dy+rnd(0.50)-0.25, 0,2,2,9)
   end
  end
 
@@ -642,7 +638,7 @@ function draw_shadows()
  for i=0,15 do pal(i,0) end
  --ships shadow
  if ship.blink then
-  if (blink(1)) spr(ship.s,ship.x,ship.y+ship.z,1,1,ship.flipx,ship.flipy)
+  if (blink(1))spr(ship.s,ship.x,ship.y+ship.z,1,1,ship.flipx,ship.flipy)
  else
   spr(ship.s,ship.x,ship.y+ship.z,1,1,ship.flipx,ship.flipy)
  end
