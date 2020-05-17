@@ -22,8 +22,9 @@ function empty_grid(size)
     return holder
 end
 
-is_running = false
-is_paused = false
+update_time=0
+grid_is_running = false
+grid_is_paused = false
 frames_per_grid_update=1
 state_grid_size=10
 state_grid=empty_grid(state_grid_size)
@@ -31,22 +32,25 @@ state_grid=empty_grid(state_grid_size)
 state_grid[5][5]=1
 --
 new_state_grid={}
-rule_grid_size=3
-rule_grid=empty_grid(rule_grid_size)
+rule_grid_config = {
+    size=3,
+    x=0,y=10
+}
+rule_grid=empty_grid(rule_grid_config.size)
 cell_size=8
+cursor={i=0,j=0}
 
-
-function draw_grid(grid)
+function draw_grid(grid, x_offset, y_offset)
     for i=1,#grid do
         for j=1,#grid[0] do
             if grid[i][j]==0 then --none
-                spr(4,i*cell_size,j*cell_size)
+                spr(4,i*cell_size+x_offset,j*cell_size+y_offset)
             elseif state_grid[i][j]%2==0 then --recent state
                 state_grid[i][j]=0
-                spr(2,i*cell_size,j*cell_size)
+                spr(2,i*cell_size+x_offset,j*cell_size+y_offset)
             elseif state_grid[i][j]%2==1 then --active state
                 state_grid[i][j]=1
-                spr(3,i*cell_size,j*cell_size)
+                spr(3,i*cell_size+x_offset,j*cell_size+y_offset)
             end
         end
     end
@@ -74,8 +78,8 @@ end
 
 function apply_rule()
     new_state_grid = empty_grid(state_grid_size)
-    for i=1,state_grid_size do
-        for j=1,state_grid_size do
+    for i=1,#new_state_grid do
+        for j=1,#new_state_grid[0] do
             if state_grid[i][j] == 1 then
                 apply_rule_to_cell(i, j)
             end
@@ -89,39 +93,35 @@ function show_title()
 end
 
 function _init()
-    cursor = {}
-    cursor.i = 0
-    cursor.j = 0
-    is_start = false
-    cls()
-    show_title()
-    print('press z to turn the cells blue', 4, 70, 5)
-    print('press z to turn the cells blue', 4, 80, 5)
-    print('press ヤよや to start', 32, 90, 6)
+    in_game = false
 end
 
 function _draw()
     cls()
-    if is_start then
-        draw_grid()
+    if in_game then
+        draw_grid(state_grid, 0, 0)
+        draw_grid(rule_grid, 0, cell_size*#state_grid)
+        -- draw cursor
+        print(cursor.i, 0, 10, 3)
+        print(cursor.j, 0, 20, 3)
         sspr(8,0,8,8,cursor.i*cell_size,cursor.j*cell_size)
     else
         show_title()
         print('❎ -', 40, 70, 6)
-        print('turn red',60,70,8)
+        print('play/pause',60,70,8)
         print('🅾️ -', 40, 80, 6)
-        print('turn blue',60,80,12)
+        print('toggle rule cell',60,80,12)
         if update_time%40<20 then
-            nt('press ❎ to start', 32, 100, 6)
+            print('press ❎ to start', 32, 100, 6)
         end
     end
 end
 
-function limit_index(i, max_val)
+function limit_rule_cursor_index(i, max_val)
     if i < 1 then
-        return i+#rule_grid[0]
-    elseif i > #rule_grid[0] then
-        return i-#rule_grid[0]
+        return i+max_val
+    elseif i > max_val then
+        return i-max_val
     end
 end
 
@@ -135,16 +135,24 @@ function cursor_controls()
     elseif btnp(3,0) then
         cursor.j += 1
     end
-    cursor.i = limit_index(cursor.i, #rule_grid)
-    cursor.j = limit_index(cursor.j, #rule_grid[0])
-    if btnp(4,0) or btnp(5,0) then
+    cursor.i = limit_rule_cursor_index(cursor.i, #rule_grid)
+    cursor.j = limit_rule_cursor_index(cursor.j, #rule_grid[0])
+    if btnp(4,0) then
         rule_grid[cursor.i][cursor.j]=(rule_grid[cursor.i][cursor.j]+1)%2
         sfx(0)
+    elseif btnp(5,0) then
+        if grid_is_running==false then
+            grid_is_running = true
+        elseif grid_is_paused then
+            grid_is_paused = false
+        else
+            grid_is_paused = true
+        end
     end
 end
 
 function game_update()
-    if update_time % frames_per_grid_update == 0 then
+    if grid_is_running and grid_is_paused==false and update_time % frames_per_grid_update == 0 then
         apply_rule()
     end
     cursor_controls()
@@ -152,14 +160,14 @@ end
 
 function menu_update()
     if btnp(4,0) or btnp(5,0) then
-        is_start = true
+        in_game = true
         update_time = 0
     end
 end
 
 function _update()
     update_time += 1
-    if is_start then
+    if in_game then
         game_update()
     else
         menu_update()
