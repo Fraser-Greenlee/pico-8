@@ -24,32 +24,26 @@ end
 
 update_time=0
 grid_is_running = false
-grid_is_paused = false
-frames_per_grid_update=1
+frames_per_grid_update=15
 state_grid_size=10
 state_grid=empty_grid(state_grid_size)
--- make starting level state
-state_grid[5][5]=1
---
 new_state_grid={}
 rule_grid_config = {
     size=3,
     x=0,y=10
 }
 rule_grid=empty_grid(rule_grid_config.size)
+assert(#rule_grid%2==1) --rule grid must have an odd number length
+rule_grid_mid_cell=(#rule_grid+1)/2
 cell_size=8
 cursor={i=0,j=0}
 
 function draw_grid(grid, x_offset, y_offset)
     for i=1,#grid do
         for j=1,#grid[0] do
-            if grid[i][j]==0 then --none
-                spr(4,i*cell_size+x_offset,j*cell_size+y_offset)
-            elseif state_grid[i][j]%2==0 then --recent state
-                state_grid[i][j]=0
+            if grid[i][j]==0 then --inactive state
                 spr(2,i*cell_size+x_offset,j*cell_size+y_offset)
-            elseif state_grid[i][j]%2==1 then --active state
-                state_grid[i][j]=1
+            elseif grid[i][j]==1 then --active state
                 spr(3,i*cell_size+x_offset,j*cell_size+y_offset)
             end
         end
@@ -57,20 +51,20 @@ function draw_grid(grid, x_offset, y_offset)
 end
 
 function inc_state_cell(i, j)
-    if i>=1 and j>=1 and i<=grid_size and j<=grid_size then
+    if i>=1 and j>=1 and i<=state_grid_size and j<=state_grid_size then
         if state_grid[i][j]==1 then
-            new_state_grid[i][j]=1
-        else
             new_state_grid[i][j]=0
+        else
+            new_state_grid[i][j]=1
         end
     end
 end
 
 function apply_rule_to_cell(i, j)
-    for im=-1,1 do
-        for jm=-1,1 do
-            if rule_grid[im][jm] then
-                inc_state_cell(i+im, j+jm)
+    for im=1,#rule_grid do
+        for jm=1,#rule_grid[im] do
+            if rule_grid[im][jm]==1 then
+                inc_state_cell(i+im-rule_grid_mid_cell, j+jm-rule_grid_mid_cell)
             end
         end
     end
@@ -80,16 +74,12 @@ function apply_rule()
     new_state_grid = empty_grid(state_grid_size)
     for i=1,#new_state_grid do
         for j=1,#new_state_grid[0] do
-            if state_grid[i][j] == 1 then
+            if state_grid[i][j]==1 then
                 apply_rule_to_cell(i, j)
             end
         end
     end
     state_grid = new_state_grid
-end
-
-function show_title()
-    sspr(0,16,80,8,20,40,100,10)
 end
 
 function _init()
@@ -100,13 +90,18 @@ function _draw()
     cls()
     if in_game then
         draw_grid(state_grid, 0, 0)
-        draw_grid(rule_grid, 0, cell_size*#state_grid)
+        local rule_grid_offset = 5+cell_size*#state_grid
+        draw_grid(rule_grid, 0, rule_grid_offset)
         -- draw cursor
-        print(cursor.i, 0, 10, 3)
-        print(cursor.j, 0, 20, 3)
-        sspr(8,0,8,8,cursor.i*cell_size,cursor.j*cell_size)
+        sspr(8,0,8,8,cursor.i*cell_size,cursor.j*cell_size+rule_grid_offset)
+        if grid_is_running then
+            print('running', 60, 110, 3)
+        else
+            print('stop', 60, 110, 8)
+        end
     else
-        show_title()
+        -- show_title
+        sspr(0,16,80,8,20,40,100,10)
         print('❎ -', 40, 70, 6)
         print('play/pause',60,70,8)
         print('🅾️ -', 40, 80, 6)
@@ -123,17 +118,23 @@ function limit_rule_cursor_index(i, max_val)
     elseif i > max_val then
         return i-max_val
     end
+    return i
+end
+
+function reset_level()
+    state_grid=empty_grid(state_grid_size)
+    state_grid[5][5]=1
 end
 
 function cursor_controls()
     if btnp(0,0) then
-        cursor.i -= 1
+        cursor.i = cursor.i-1
     elseif btnp(1,0) then
-        cursor.i += 1
+        cursor.i = cursor.i+1
     elseif btnp(2,0) then
-        cursor.j -= 1
+        cursor.j = cursor.j-1
     elseif btnp(3,0) then
-        cursor.j += 1
+        cursor.j = cursor.j+1
     end
     cursor.i = limit_rule_cursor_index(cursor.i, #rule_grid)
     cursor.j = limit_rule_cursor_index(cursor.j, #rule_grid[0])
@@ -141,18 +142,17 @@ function cursor_controls()
         rule_grid[cursor.i][cursor.j]=(rule_grid[cursor.i][cursor.j]+1)%2
         sfx(0)
     elseif btnp(5,0) then
-        if grid_is_running==false then
-            grid_is_running = true
-        elseif grid_is_paused then
-            grid_is_paused = false
+        if grid_is_running then
+            grid_is_running=false
+            reset_level()
         else
-            grid_is_paused = true
+            grid_is_running=true
         end
     end
 end
 
 function game_update()
-    if grid_is_running and grid_is_paused==false and update_time % frames_per_grid_update == 0 then
+    if grid_is_running and update_time%frames_per_grid_update==0 then
         apply_rule()
     end
     cursor_controls()
@@ -162,6 +162,7 @@ function menu_update()
     if btnp(4,0) or btnp(5,0) then
         in_game = true
         update_time = 0
+        reset_level()
     end
 end
 
