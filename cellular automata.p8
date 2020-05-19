@@ -58,14 +58,14 @@ function draw_rule_grid()
         for j=1,#rule_grid[0] do
             rule_grid_cell=rule_grid[i][j]
             if rule_grid_cell==1 then
-                -- ANY statement
-                spr(2,i*cell_size,j*cell_size+rule_grid_offset)
-            elseif rule_grid_cell==2 then
                 -- TRUE statement
                 spr(3,i*cell_size,j*cell_size+rule_grid_offset)
-            else
+            elseif rule_grid_cell==2 then
                 -- FALSE statement
                 spr(4,i*cell_size,j*cell_size+rule_grid_offset)
+            else
+                -- ANY statement
+                spr(2,i*cell_size,j*cell_size+rule_grid_offset)
             end
         end
     end
@@ -74,14 +74,13 @@ end
 function has_passed(rule_grid_cell, i, j)
     if i>=1 and j>=1 and i<=state_grid_size and j<=state_grid_size then
         if rule_grid_cell==1 then
-            -- ANY statement
-            return true
-        elseif rule_grid_cell==2 then
             -- TRUE statement
             return state_grid[i][j]==1
-        else
+        elseif rule_grid_cell==2 then
             -- FALSE statement
             return state_grid[i][j]==0
+        else
+            return true
         end
     end
     return true
@@ -90,7 +89,7 @@ end
 function apply_rule_to_cell(i, j)
     for im=1,#rule_grid do
         for jm=1,#rule_grid[im] do
-            if not has_passed(rule_grid[im][jm], i+im-rule_grid_mid_cell, j+jm-rule_grid_mid_cell) then
+            if has_passed(rule_grid[im][jm], i+im-rule_grid_mid_cell, j+jm-rule_grid_mid_cell)==false then
                 return 0
             end
         end
@@ -102,9 +101,7 @@ function apply_rule()
     new_state_grid = empty_grid(state_grid_size)
     for i=1,#new_state_grid do
         for j=1,#new_state_grid[0] do
-            if state_grid[i][j]==1 then
-                new_state_grid[i][j]=apply_rule_to_cell(i, j)
-            end
+            new_state_grid[i][j]=apply_rule_to_cell(i, j)
         end
     end
     state_grid = new_state_grid
@@ -166,7 +163,7 @@ function cursor_controls()
     cursor.i = limit_rule_cursor_index(cursor.i, #rule_grid)
     cursor.j = limit_rule_cursor_index(cursor.j, #rule_grid[0])
     if btnp(4,0) then
-        rule_grid[cursor.i][cursor.j]=(rule_grid[cursor.i][cursor.j]+1)%2
+        rule_grid[cursor.i][cursor.j]=(rule_grid[cursor.i][cursor.j]+1)%3
         sfx(0)
     elseif btnp(5,0) then
         if grid_is_running then
