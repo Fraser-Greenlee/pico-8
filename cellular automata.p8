@@ -38,36 +38,64 @@ rule_grid_mid_cell=(#rule_grid+1)/2
 cell_size=8
 cursor={i=0,j=0}
 
-function draw_grid(grid, x_offset, y_offset)
-    for i=1,#grid do
-        for j=1,#grid[0] do
-            if grid[i][j]==0 then --inactive state
-                spr(2,i*cell_size+x_offset,j*cell_size+y_offset)
-            elseif grid[i][j]==1 then --active state
-                spr(3,i*cell_size+x_offset,j*cell_size+y_offset)
+function draw_state_grid()
+    for i=1,#state_grid do
+        for j=1,#state_grid[0] do
+            if state_grid[i][j]==0 then
+                -- inactive state
+                spr(2,i*cell_size,j*cell_size)
+            elseif state_grid[i][j]==1 then
+                -- active state
+                spr(3,i*cell_size,j*cell_size)
             end
         end
     end
 end
 
-function inc_state_cell(i, j)
-    if i>=1 and j>=1 and i<=state_grid_size and j<=state_grid_size then
-        if state_grid[i][j]==1 then
-            new_state_grid[i][j]=0
-        else
-            new_state_grid[i][j]=1
+rule_grid_offset = 5+cell_size*#state_grid
+function draw_rule_grid()
+    for i=1,#rule_grid do
+        for j=1,#rule_grid[0] do
+            rule_grid_cell=rule_grid[i][j]
+            if rule_grid_cell==1 then
+                -- ANY statement
+                spr(2,i*cell_size,j*cell_size+rule_grid_offset)
+            elseif rule_grid_cell==2 then
+                -- TRUE statement
+                spr(3,i*cell_size,j*cell_size+rule_grid_offset)
+            else
+                -- FALSE statement
+                spr(4,i*cell_size,j*cell_size+rule_grid_offset)
+            end
         end
     end
+end
+
+function has_passed(rule_grid_cell, i, j)
+    if i>=1 and j>=1 and i<=state_grid_size and j<=state_grid_size then
+        if rule_grid_cell==1 then
+            -- ANY statement
+            return true
+        elseif rule_grid_cell==2 then
+            -- TRUE statement
+            return state_grid[i][j]==1
+        else
+            -- FALSE statement
+            return state_grid[i][j]==0
+        end
+    end
+    return true
 end
 
 function apply_rule_to_cell(i, j)
     for im=1,#rule_grid do
         for jm=1,#rule_grid[im] do
-            if rule_grid[im][jm]==1 then
-                inc_state_cell(i+im-rule_grid_mid_cell, j+jm-rule_grid_mid_cell)
+            if not has_passed(rule_grid[im][jm], i+im-rule_grid_mid_cell, j+jm-rule_grid_mid_cell) then
+                return 0
             end
         end
     end
+    return 1
 end
 
 function apply_rule()
@@ -75,7 +103,7 @@ function apply_rule()
     for i=1,#new_state_grid do
         for j=1,#new_state_grid[0] do
             if state_grid[i][j]==1 then
-                apply_rule_to_cell(i, j)
+                new_state_grid[i][j]=apply_rule_to_cell(i, j)
             end
         end
     end
@@ -89,9 +117,8 @@ end
 function _draw()
     cls()
     if in_game then
-        draw_grid(state_grid, 0, 0)
-        local rule_grid_offset = 5+cell_size*#state_grid
-        draw_grid(rule_grid, 0, rule_grid_offset)
+        draw_rule_grid()
+        draw_state_grid()
         -- draw cursor
         sspr(8,0,8,8,cursor.i*cell_size,cursor.j*cell_size+rule_grid_offset)
         if grid_is_running then
@@ -175,14 +202,14 @@ function _update()
     end
 end
 __gfx__
-00000000aaa00aaa7666666776666667766666675333333333335000555555555555500000000000000000000000000000000000000000000000000000000000
-00000000a000000a6777777667777776600000063337733333333000555775555555500000000000000000000000000000000000000000000000000000000000
-00700700a000000a67dddd7667cccc76600000063373373377733000557557557775500000000000000000000000000000000000000000000000000000000000
-000770000000000067dddd7667cccc76600000063733333733373000575555575557500000000000000000000000000000000000000000000000000000000000
-000770000000000067dddd7667cccc76600000063733773733373000575577575557500000000000000000000000000000000000000000000000000000000000
-00700700a000000a67dddd7667cccc76600000063373373733373000557557575557500000000000000000000000000000000000000000000000000000000000
-00000000a000000a6777777667777776600000063337733377733000555775557775500000000000000000000000000000000000000000000000000000000000
-00000000aaa00aaa7666666776666667766666675333333333335000555555555555500000000000000000000000000000000000000000000000000000000000
+00000000aaa00aaa7666666776666667766666677666666776666667766666677666666753333333333350005555555555555000000000000000000000000000
+00000000a000000a600000066cccccc6688888866dddddd66eeeeee6600000066000000633377333333330005557755555555000000000000000000000000000
+00700700a000000a600000066cccccc6688888866dddddd66eeeeee6600000066000000633733733777330005575575577755000000000000000000000000000
+0007700000000000600000066cccccc6688888866dddddd66eeeeee6600000066000000637333337333730005755555755575000000000000000000000000000
+0007700000000000600000066cccccc6688888866dddddd66eeeeee6600000066000000637337737333730005755775755575000000000000000000000000000
+00700700a000000a600000066cccccc6688888866dddddd66eeeeee6600000066000000633733737333730005575575755575000000000000000000000000000
+00000000a000000a600000066cccccc6688888866dddddd66eeeeee6600000066000000633377333777330005557755577755000000000000000000000000000
+00000000aaa00aaa7666666776666667766666677666666776666667766666677666666753333333333350005555555555555000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
