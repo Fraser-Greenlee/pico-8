@@ -28,6 +28,7 @@ frames_per_grid_update=15
 state_grid_size=10
 state_grid=empty_grid(state_grid_size)
 new_state_grid={}
+state_age=empty_grid(state_grid_size)
 rule_grid_config = {
     size=3,
     x=0,y=10
@@ -35,37 +36,59 @@ rule_grid_config = {
 rule_grid=empty_grid(rule_grid_config.size)
 assert(#rule_grid%2==1) --rule grid must have an odd number length
 rule_grid_mid_cell=(#rule_grid+1)/2
-cell_size=8
+state_cell_size=4
+rule_cell_size=6
+color_table={1,9,10}
 cursor={i=0,j=0}
+
+function min(n1,n2)
+    if n1<n2 then
+        return n1
+    end
+    return n2
+end
+
+function draw_cell(x, y, size, color)
+    rectfill(x,y,x+size,y+size,color)
+end
 
 function draw_state_grid()
     for i=1,#state_grid do
         for j=1,#state_grid[0] do
-            if state_grid[i][j]==0 then
-                -- inactive state
-                spr(2,i*cell_size,j*cell_size)
-            elseif state_grid[i][j]==1 then
-                -- active state
-                spr(3,i*cell_size,j*cell_size)
+            if state_age[i][j]>0 then
+                if state_grid[i][j]==0 then
+                    -- inactive state
+                    -- x0,y0=i*state_cell_size,j*state_cell_size
+                    -- rectfill(x0,y0,x0+state_cell_size,y0+state_cell_size,0)
+                    state_age[i][j]=state_age[i][j]-1
+                elseif state_grid[i][j]==1 then
+                    -- active state
+                    x0,y0=i*state_cell_size,j*state_cell_size
+                    state_age[i][j]=3
+                end
+                draw_cell(x0, y0, state_cell_size, color_table[state_age[i][j]])
             end
         end
     end
 end
 
-rule_grid_offset = 5+cell_size*#state_grid
+rule_grid_offset = 15+state_cell_size*#state_grid
+rule_cell_pad = 2
 function draw_rule_grid()
+    draw_cell(0, rule_grid_offset+rule_cell_size, rule_cell_size*#rule_grid, 6)
     for i=1,#rule_grid do
         for j=1,#rule_grid[0] do
             rule_grid_cell=rule_grid[i][j]
+            x,y=i*(rule_cell_size+rule_cell_pad),j*(rule_cell_size+rule_cell_pad)+rule_grid_offset
             if rule_grid_cell==1 then
                 -- TRUE statement
-                spr(3,i*cell_size,j*cell_size+rule_grid_offset)
+                draw_cell(x,y,rule_cell_size,12)
             elseif rule_grid_cell==2 then
                 -- FALSE statement
-                spr(4,i*cell_size,j*cell_size+rule_grid_offset)
+                draw_cell(x,y,rule_cell_size,8)
             else
                 -- ANY statement
-                spr(2,i*cell_size,j*cell_size+rule_grid_offset)
+                draw_cell(x,y,rule_cell_size,0)
             end
         end
     end
@@ -117,7 +140,7 @@ function _draw()
         draw_rule_grid()
         draw_state_grid()
         -- draw cursor
-        sspr(8,0,8,8,cursor.i*cell_size,cursor.j*cell_size+rule_grid_offset)
+        sspr(8,0,8,8,cursor.i*rule_cell_size,cursor.j*rule_cell_size+rule_grid_offset)
         if grid_is_running then
             print('running', 60, 110, 3)
         else
@@ -202,11 +225,11 @@ __gfx__
 00000000aaa00aaa7666666776666667766666677666666776666667766666677666666753333333333350005555555555555000000000000000000000000000
 00000000a000000a600000066cccccc6688888866dddddd66eeeeee6600000066000000633377333333330005557755555555000000000000000000000000000
 00700700a000000a600000066cccccc6688888866dddddd66eeeeee6600000066000000633733733777330005575575577755000000000000000000000000000
-0007700000000000600000066cccccc6688888866dddddd66eeeeee6600000066000000637333337333730005755555755575000000000000000000000000000
-0007700000000000600000066cccccc6688888866dddddd66eeeeee6600000066000000637337737333730005755775755575000000000000000000000000000
-00700700a000000a600000066cccccc6688888866dddddd66eeeeee6600000066000000633733737333730005575575755575000000000000000000000000000
-00000000a000000a600000066cccccc6688888866dddddd66eeeeee6600000066000000633377333777330005557755577755000000000000000000000000000
-00000000aaa00aaa7666666776666667766666677666666776666667766666677666666753333333333350005555555555555000000000000000000000000000
+0007700000000000600000066cccccc6688888866dddddd66eeeeee6600000066000000637333337333730005755555755575000000660000006600000000000
+0007700000000000600000066cccccc6688888866dddddd66eeeeee6600000066000000637337737333730005755775755575000006776000066660000000000
+00700700a000000a600000066cccccc6688888866dddddd66eeeeee6600000066000000633733737333730005575575755575000067777600666666000000000
+00000000a000000a600000066cccccc6688888866dddddd66eeeeee6600000066000000633377333777330005557755577755000067777600666666000000000
+00000000aaa00aaa7666666776666667766666677666666776666667766666677666666753333333333350005555555555555000677777766666666600000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
